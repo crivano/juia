@@ -1,9 +1,12 @@
 package com.crivano.juia.html.control;
 
+import com.crivano.jbiz.IEnum;
 import com.crivano.juia.control.Topic;
 import com.webfirmframework.wffweb.tag.html.P;
+import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Option;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -27,6 +30,21 @@ public class TopicControl {
 			}
 		};
 		new NoTag(p, ": ");
-		new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
+		if (IEnum.class.isAssignableFrom(vi.fld.getType())) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("{{");
+			for (final IEnum v : (IEnum[]) vi.fld.getType().getEnumConstants()) {
+				sb.append(value);
+				sb.append(" === '");
+				sb.append(v.getCode());
+				sb.append("' ? ' ");
+				sb.append(v.getDescr());
+				sb.append("' : ");
+			}
+			sb.append("'-' }}");
+			new NoTag(p, sb.toString());
+		} else
+			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value
+					+ ".title : " + value + "}}");
 	}
 }
