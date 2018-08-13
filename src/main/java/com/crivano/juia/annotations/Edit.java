@@ -3,9 +3,6 @@ package com.crivano.juia.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import com.crivano.juia.ViewItem;
-import com.crivano.juia.ViewItem.Width;
-
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Edit {
 	String caption() default "";
@@ -13,8 +10,6 @@ public @interface Edit {
 	String hint() default "";
 
 	int size() default -1;
-
-	Width width() default Width.Normal;
 
 	int zorder() default -1;
 
@@ -37,4 +32,13 @@ public @interface Edit {
 	boolean newRow() default false;
 
 	String[] attr() default "";
+
+	String[] attrContainer() default "";
+
+	EditKindEnum kind() default EditKindEnum.DEFAULT;
+
+	String init() default "";
+
+	String options() default "";
+
 }

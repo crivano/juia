@@ -1,10 +1,10 @@
 package com.crivano.juia.html.control;
 
-import com.crivano.juia.ViewItem;
 import com.crivano.juia.annotations.Global.Gender;
+import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.html.HtmlTemplateBuilder;
+import com.crivano.juia.html.Utils;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
-import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
@@ -13,19 +13,14 @@ import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
-import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class CompleteBoxControl {
 
-	public static void render(Div parent, ClassAttribute col, final ViewItem vi) {
-		new Section(parent, col) {
+	public static void render(Div parent, ClassAttribute col,
+			final FieldComplete vi) {
+		Section section = new Section(parent, col) {
 			{
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("label")) {
-					{
-						new NoTag(this, vi.caption);
-					}
-				};
+				Utils.label(this, vi);
 
 				new Label(this, new CustomAttribute("for", vi.fld.getName()),
 						new Title(vi.hint), new ClassAttribute("input")) {
@@ -61,16 +56,17 @@ public class CompleteBoxControl {
 								new CustomAttribute("focus-first", "true"),
 								new CustomAttribute("remote-url-data-field",
 										"list"), new CustomAttribute(
-										"title-field", "title"),
+										"title-field", "firstLine"),
 								new CustomAttribute("description-field",
-										"description"), new ClassAttribute(
+										"secondLine"), new ClassAttribute(
 										"form-control angucomplete-ctrl"),
 								new Id(vi.fld.getName()), new Name(vi.fld
 										.getName()));
-						HtmlTemplateBuilder.addAttr(vi, div);
+						HtmlTemplateBuilder.addAttr(vi.attr, div);
 					}
 				};
 			}
 		};
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
 	}
 }

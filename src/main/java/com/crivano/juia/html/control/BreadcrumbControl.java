@@ -31,9 +31,14 @@ public class BreadcrumbControl {
 										if (view.getKind() == View.Kind.EditView)
 											new NoTag(this, "Edição de "
 													+ view.getSingular());
-										else
+										else if (view.getKind() == View.Kind.SearchView)
 											new NoTag(this, "Lista de "
 													+ view.getPlural());
+										else if (view.getKind() == View.Kind.ShowView) {
+											if (view.getSingular() != null)
+												new NoTag(this,
+														"{{data.title}}");
+										}
 									}
 								};
 								if (view.getKind() == View.Kind.SearchView) {

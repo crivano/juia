@@ -1,7 +1,8 @@
 package com.crivano.juia.html.control;
 
-import com.crivano.jbiz.IEnum;
-import com.crivano.juia.control.FieldCombo;
+import com.crivano.juia.annotations.Edit;
+import com.crivano.juia.annotations.Global.Gender;
+import com.crivano.juia.control.FieldRefSelect;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
@@ -16,9 +17,9 @@ import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
-public class SelectControl {
+public class RefSelectControl {
 	public static void render(Div parent, ClassAttribute col,
-			final FieldCombo vi) {
+			final FieldRefSelect vi) {
 		Section section = new Section(parent, col) {
 			{
 				Utils.label(this, vi);
@@ -26,26 +27,17 @@ public class SelectControl {
 				new Label(this, new CustomAttribute("for", vi.fld.getName()),
 						new Title(vi.hint), new ClassAttribute("select")) {
 					{
-
 						Select select = new Select(this, new CustomAttribute(
-								"ng-model", vi.name)) {
-							{
-
-								if (IEnum.class.isAssignableFrom(vi.fld
-										.getType())) {
-									for (final IEnum v : (IEnum[]) vi.fld
-											.getType().getEnumConstants()) {
-										new Option(this, new Value(v.getCode())) {
-											{
-												new NoTag(this, v.getDescr());
-											}
-										};
-									}
-								}
-							}
-						};
+								"ng-model", vi.name), new CustomAttribute(
+								"ng-init", vi.getInit()), new CustomAttribute(
+								"ng-options", vi.getOptions()));
 						HtmlTemplateBuilder.addAttr(vi.attr, select);
 						new I(this);
+						Option option = new Option(select, new Value(""));
+						if (vi.gender == Gender.SHE)
+							new NoTag(option, "[Nenhuma]");
+						else
+							new NoTag(option, "[Nenhum]");
 					}
 				};
 			}

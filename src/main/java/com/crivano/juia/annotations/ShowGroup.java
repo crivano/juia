@@ -4,11 +4,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldSet {
+public @interface ShowGroup {
 	String caption() default "<none>";
 
-	// String show() default "";
+	int colXS() default 12;
 
-	String[] attr() default "";
+	int colS() default 0;
 
+	int colM() default 0;
+
+	int colL() default 0;
+
+	int colXL() default 0;
+
+	boolean newRow() default false;
 }

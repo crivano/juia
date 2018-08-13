@@ -3,28 +3,20 @@ package com.crivano.juia;
 import java.util.ArrayList;
 
 import com.crivano.juia.annotations.Global;
+import com.crivano.juia.control.Control;
 
-public class View {
+public class View implements ControlContainer {
 
 	public enum Kind {
-		SearchView, EditView, ActionView
+		SearchView, EditView, ShowView
 	}
 
 	private String singular;
 	private String plural;
 	private Global.Gender gender;
 
-	private ArrayList<ViewItem> alViewGlue;
+	private ArrayList<Control> controls = new ArrayList<Control>();
 	private Kind kind;
-
-	public View() {
-		super();
-		this.alViewGlue = new ArrayList<ViewItem>();
-	}
-
-	public ArrayList<ViewItem> getViewGlueList() {
-		return alViewGlue;
-	}
 
 	public Kind getKind() {
 		return kind;
@@ -56,6 +48,14 @@ public class View {
 
 	public void setSingular(String singular) {
 		this.singular = singular;
+	}
+
+	public ArrayList<Control> getControls() {
+		return controls;
+	}
+
+	public void setControls(ArrayList<Control> controls) {
+		this.controls = controls;
 	}
 
 }

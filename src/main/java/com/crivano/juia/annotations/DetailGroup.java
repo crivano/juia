@@ -4,11 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldSet {
+public abstract @interface DetailGroup {
 	String caption() default "<none>";
 
-	// String show() default "";
-
-	String[] attr() default "";
-
+	String show() default "";
 }

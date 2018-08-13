@@ -1,25 +1,41 @@
 package com.crivano.juia;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.Ref;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.money.Money;
 import org.joda.time.LocalDate;
 
 import com.crivano.jbiz.IEnum;
 import com.crivano.juia.annotations.Browse;
+import com.crivano.juia.annotations.Detail;
+import com.crivano.juia.annotations.DetailGroup;
 import com.crivano.juia.annotations.Edit;
+import com.crivano.juia.annotations.EditKindEnum;
 import com.crivano.juia.annotations.FieldSet;
 import com.crivano.juia.annotations.Global;
-import com.crivano.juia.annotations.Menu;
 import com.crivano.juia.annotations.Search;
+import com.crivano.juia.annotations.Show;
+import com.crivano.juia.annotations.ShowGroup;
+import com.crivano.juia.control.Control;
+import com.crivano.juia.control.FieldCheck;
+import com.crivano.juia.control.FieldCombo;
+import com.crivano.juia.control.FieldComplete;
+import com.crivano.juia.control.FieldDate;
+import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.FieldMoney;
+import com.crivano.juia.control.FieldMultipleSelect;
+import com.crivano.juia.control.FieldNumeric;
+import com.crivano.juia.control.FieldRefSelect;
+import com.crivano.juia.control.FieldText;
+import com.crivano.juia.control.Repeat;
+import com.crivano.juia.control.Sidebar;
+import com.crivano.juia.control.TableColumn;
+import com.crivano.juia.control.Topic;
 
 public class AnnotationViewBuilder extends ViewBuilder {
 	public void buildView(String prefix, Object o, View.Kind kind,
@@ -30,79 +46,146 @@ public class AnnotationViewBuilder extends ViewBuilder {
 			view.setSingular(juiaGlobal.singular());
 			view.setPlural(juiaGlobal.plural());
 		}
-		addViewItemsForObject(prefix, kind, o.getClass());
+		addViewItemsForObject(view, prefix, kind, false, o.getClass());
+		if (kind == View.Kind.ShowView) {
+			Sidebar sb = new Sidebar();
+			addViewItemsForObject(sb, prefix, kind, true, o.getClass());
+			view.getControls().add(sb);
+		}
 		switch (kind) {
 		case SearchView:
 			addSearchItems(fFrontView);
 			break;
+		case ShowView:
+			addShowItems(fFrontView);
+			break;
 		case EditView:
-			addEditItems(fFrontView);
+			addEditItems(juiaGlobal.deletable(), fFrontView);
 			break;
 		}
 	}
 
-	private void addViewItemsForObject(String prefix, View.Kind kind,
-			Class originalClass) {
-		List<Class> classes = new ArrayList<Class>();
-		for (Class clazz = originalClass; clazz != Object.class; clazz = clazz
-				.getSuperclass()) {
-			classes.add(0, clazz);
-		}
+	public static boolean isSkipShow(Class clazz) {
+		List<Class> classes = getClassHierarchy(clazz);
+		return isSkipShow(classes);
+	}
+
+	private static boolean isSkipShow(List<Class> classes) {
+		boolean skipShow = true;
 		for (Class clazz : classes) {
 			Field fieldlist[] = clazz.getDeclaredFields();
 			for (int i = 0; i < fieldlist.length; i++) {
 				Field fld = fieldlist[i];
-				if (fld.getType().isAnnotationPresent(Global.class)) {
-					int nextItem = view.getViewGlueList().size();
-					addViewItemsForObject(prefix + fld.getName() + ".", kind,
-							fld.getType());
-					if (view.getViewGlueList().size() > nextItem
-							&& kind == View.Kind.EditView) {
-						Edit juiaEdit = fld.getAnnotation(Edit.class);
-						FieldSet juiaFieldSet = fld
-								.getAnnotation(FieldSet.class);
-						ViewItem vg = view.getViewGlueList().get(nextItem);
-						if (vg.newFieldSet == null && juiaEdit != null
-								&& juiaFieldSet != null) {
-							vg.newFieldSet = juiaFieldSet.caption();
+				fld.setAccessible(true);
+				Show juiaShow = fld.getAnnotation(Show.class);
+				Detail juiaDetail = fld.getAnnotation(Detail.class);
+				if (juiaShow == null && juiaDetail == null)
+					continue;
+				skipShow = false;
+				break;
+			}
+		}
+		return skipShow;
+	}
+
+	private void addViewItemsForObject(ControlContainer container,
+			String prefix, View.Kind kind, boolean detail, Class originalClass) {
+		List<Class> classes = getClassHierarchy(originalClass);
+
+		// Verifica se existe alguma anotação de @Show ou @Detail, para saber se
+		// deve ou não passar pela página de show
+		boolean skipShow = isSkipShow(classes);
+
+		for (Class clazz : classes) {
+			Field fieldlist[] = clazz.getDeclaredFields();
+			for (int i = 0; i < fieldlist.length; i++) {
+				Field fld = fieldlist[i];
+				fld.setAccessible(true);
+				Search juiaSearch = fld.getAnnotation(Search.class);
+				Show juiaShow = fld.getAnnotation(Show.class);
+				Edit juiaEdit = fld.getAnnotation(Edit.class);
+				Detail juiaDetail = fld.getAnnotation(Detail.class);
+				if (juiaSearch == null && juiaEdit == null && juiaShow == null
+						&& juiaDetail == null)
+					continue;
+
+				// Embedded object
+				//
+				if (kind == View.Kind.EditView && juiaEdit != null) {
+					if (!fld.getType().isEnum()
+							&& fld.getType().isAnnotationPresent(Global.class)) {
+						int nextItem = container.getControls().size();
+						addViewItemsForObject(container, prefix + fld.getName()
+								+ ".", kind, detail, fld.getType());
+
+						// New group
+						if (container.getControls().size() > nextItem) {
+							FieldSet juiaFieldSet = fld
+									.getAnnotation(FieldSet.class);
+							Control vg = container.getControls().get(nextItem);
+							if (vg.newGroup == null && juiaFieldSet != null) {
+								vg.newGroup = juiaFieldSet.caption();
+								vg.attrGroup = juiaFieldSet.attr();
+							}
 						}
+						continue;
 					}
-				} else if (Collection.class.isAssignableFrom(fld.getType())) {
-					{
-						ViewItem vg = new ViewItem();
-						vg.name = prefix + fld.getName();
-						vg.type = ViewItem.Type.ListBegin;
-						view.getViewGlueList().add(vg);
+				}
+
+				// Embedded List, build a repeat component on a EditView
+				//
+				if (kind == View.Kind.EditView && juiaEdit != null
+						&& List.class.isAssignableFrom(fld.getType())) {
+					Repeat repeat = new Repeat(fld.getName());
+					repeat.name = prefix + fld.getName();
+					FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
+					if (juiaFieldSet != null) {
+						repeat.newGroup = juiaFieldSet.caption();
+						repeat.attrGroup = juiaFieldSet.attr();
 					}
+					container.getControls().add(repeat);
 					Class clazzList = (Class) ((ParameterizedType) fld
 							.getGenericType()).getActualTypeArguments()[0];
-
-					int nextItem = view.getViewGlueList().size();
-					addViewItemsForObject(fld.getName() + "Item.", kind,
-							clazzList);
-					{
-						ViewItem vg = new ViewItem();
-						vg.name = prefix + fld.getName();
-						vg.type = ViewItem.Type.ListEnd;
-						view.getViewGlueList().add(vg);
+					Global juiaGlobal = (Global) clazzList
+							.getAnnotation(Global.class);
+					if (juiaGlobal != null) {
+						repeat.setSingular(juiaGlobal.singular());
+						repeat.setPlural(juiaGlobal.plural());
+						repeat.setGender(juiaGlobal.gender());
+						if (repeat.newGroup == null)
+							repeat.newGroup = juiaGlobal.plural();
 					}
-				} else
-					addViewItem(prefix, kind, fld);
+					int nextItem = container.getControls().size();
+					addViewItemsForObject(repeat, fld.getName() + "Item.",
+							kind, detail, clazzList);
+					continue;
+				}
+				Control control = addViewItem(prefix, kind, detail, fld,
+						juiaSearch, juiaEdit, juiaShow, juiaDetail, skipShow);
+				if (control != null)
+					container.getControls().add(control);
 			}
 		}
 	}
 
-	private void addViewItem(String prefix, View.Kind kind, Field fld) {
-		fld.setAccessible(true);
-		// int mod = fld.getModifiers();
-		// switch (mod) {
-		// case Modifier.PUBLIC:
-		// fld.getName();
-		// ;
+	protected static List<Class> getClassHierarchy(Class baseClass) {
+		List<Class> classes = new ArrayList<Class>();
+		for (Class clazz = baseClass; clazz != Object.class; clazz = clazz
+				.getSuperclass()) {
+			classes.add(0, clazz);
+		}
+		return classes;
+	}
 
-		Search juiaSearch = fld.getAnnotation(Search.class);
+	private Control addViewItem(String prefix, View.Kind kind, boolean detail,
+			Field fld, Search juiaSearch, Edit juiaEdit, Show juiaShow,
+			Detail juiaDetail, boolean skipShow) {
+		Control vg;
+		if (juiaSearch == null && juiaEdit == null && juiaShow == null
+				&& juiaDetail == null)
+			return null;
+
 		FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
-		Edit juiaEdit = fld.getAnnotation(Edit.class);
 		Browse juiaBrowse = fld.getAnnotation(Browse.class);
 
 		// Get juiaGlobal for generic type
@@ -116,50 +199,136 @@ public class AnnotationViewBuilder extends ViewBuilder {
 						.getAnnotation(Global.class);
 		}
 
-		ViewItem vg = new ViewItem();
+		if (kind == View.Kind.SearchView) {
+			vg = new TableColumn(fld.getName(), skipShow);
+		} else if (kind == View.Kind.ShowView) {
+			if (!detail)
+				vg = new Topic();
+			else
+				vg = new Topic();
+		} else if (juiaEdit != null && juiaEdit.kind() == EditKindEnum.FILE) {
+			vg = new FieldFile();
+		} else if ("Ref".equals(fld.getType().getSimpleName())) {
+			if (juiaEdit != null && juiaEdit.kind() == EditKindEnum.SELECT)
+				vg = new FieldRefSelect(juiaEdit.init(), juiaEdit.options());
+			else
+				vg = new FieldComplete();
+		} else if (IEnum.class.isAssignableFrom(fld.getType())) {
+			vg = new FieldCombo();
+		} else if (Set.class.isAssignableFrom(fld.getType())) {
+			vg = new FieldMultipleSelect();
+		} else if (fld.getType() == LocalDate.class) {
+			vg = new FieldDate();
+		} else if (fld.getType() == Money.class) {
+			vg = new FieldMoney();
+		} else if (fld.getType() == String.class) {
+			vg = new FieldText();
+		} else if (fld.getType() == Double.class
+				|| fld.getType() == Float.class) {
+			vg = new FieldNumeric();
+		} else if (fld.getType().isPrimitive()) {
+			if (fld.getType() == boolean.class
+					|| fld.getType() == Boolean.class)
+				vg = new FieldCheck();
+			else
+				vg = new FieldText();
+		} else {
+			vg = new FieldCombo();
+		}
+
 		vg.name = prefix + fld.getName();
 		switch (kind) {
 		case SearchView:
 			if (juiaSearch == null)
-				return;
+				return null;
 			vg.caption = juiaSearch.caption();
 			vg.hint = juiaSearch.hint();
-			vg.size = juiaSearch.size();
-			vg.wrap = juiaSearch.wrap();
 			break;
 		case EditView:
 			if (juiaEdit == null)
-				return;
+				return null;
 			vg.caption = juiaEdit.caption();
 			vg.hint = juiaEdit.hint();
-			vg.colXS = juiaEdit.colXS();
-			vg.colS = juiaEdit.colS();
-			vg.colM = juiaEdit.colM();
-			vg.colL = juiaEdit.colL();
-			vg.colXL = juiaEdit.colXL();
+			if (vg instanceof com.crivano.juia.control.Field) {
+				com.crivano.juia.control.Field f = (com.crivano.juia.control.Field) vg;
+				f.fld = fld;
+
+				// Set the width
+				f.colXS = juiaEdit.colXS();
+				f.colS = juiaEdit.colS();
+				f.colM = juiaEdit.colM();
+				f.colL = juiaEdit.colL();
+				f.colXL = juiaEdit.colXL();
+
+				setFieldGlobals(f, juiaGlobal);
+				f.attr = juiaEdit.attr();
+				f.attrContainer = juiaEdit.attrContainer();
+			}
 			vg.newRow = juiaEdit.newRow();
-			vg.attr = juiaEdit.attr();
-			if (juiaFieldSet != null)
-				vg.newFieldSet = juiaFieldSet.caption();
-			if ("<none>".equals(vg.newFieldSet))
-				vg.newFieldSet = null;
+			if (juiaFieldSet != null) {
+				vg.newGroup = juiaFieldSet.caption();
+				vg.attrGroup = juiaFieldSet.attr();
+			}
+			if ("<none>".equals(vg.newGroup))
+				vg.newGroup = null;
 
-			vg.size = juiaEdit.size();
-			vg.wrap = juiaEdit.wrap();
+			break;
+		case ShowView:
+			if (!detail) {
+				if (juiaShow == null)
+					return null;
+				vg.caption = juiaShow.caption();
+				vg.hint = juiaShow.hint();
+				if (vg instanceof com.crivano.juia.control.Field) {
+					com.crivano.juia.control.Field f = (com.crivano.juia.control.Field) vg;
+					f.fld = fld;
 
-			if (juiaGlobal != null) {
-				vg.singular = juiaGlobal.singular();
-				vg.plural = juiaGlobal.plural();
-				vg.gender = juiaGlobal.gender();
-				vg.locator = juiaGlobal.locator();
+					f.value = juiaShow.value();
+					setFieldGlobals(f, juiaGlobal);
+					f.attr = juiaShow.attr();
+				}
+				ShowGroup juiaShowGroup = fld.getAnnotation(ShowGroup.class);
+				if (juiaShowGroup != null) {
+					vg.newGroup = juiaShowGroup.caption();
+					vg.newRowGroup = juiaShowGroup.newRow();
+					// Set the width
+					vg.colXSGroup = juiaShowGroup.colXS();
+					vg.colSGroup = juiaShowGroup.colS();
+					vg.colMGroup = juiaShowGroup.colM();
+					vg.colLGroup = juiaShowGroup.colL();
+					vg.colXLGroup = juiaShowGroup.colXL();
+				}
+				if ("<none>".equals(vg.newGroup))
+					vg.newGroup = null;
+			} else {
+				if (juiaDetail == null)
+					return null;
+				vg.caption = juiaDetail.caption();
+				vg.hint = juiaDetail.hint();
+				if (vg instanceof com.crivano.juia.control.Field) {
+					com.crivano.juia.control.Field f = (com.crivano.juia.control.Field) vg;
+					f.fld = fld;
+					f.colXS = 12;
+					setFieldGlobals(f, juiaGlobal);
+					f.attr = juiaDetail.attr();
+				}
+				vg.newRow = true;
+				DetailGroup juiaDetailGroup = fld
+						.getAnnotation(DetailGroup.class);
+				if (juiaDetailGroup != null)
+					vg.newGroup = juiaDetailGroup.caption();
+				if ("<none>".equals(vg.newGroup))
+					vg.newGroup = null;
 			}
 
 			break;
 		}
 
+		// Set the caption
 		vg.caption = fillWithDefaultCaption(vg.caption, juiaEdit, juiaSearch,
 				juiaBrowse, fld);
 
+		// Set the hint
 		if (vg.hint == null)
 			vg.hint = "";
 		if (vg.hint.equals("") && juiaEdit != null)
@@ -169,42 +338,16 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		if (vg.hint.equals("") && juiaBrowse != null)
 			vg.hint = juiaBrowse.hint();
 
-		vg.fld = fld;
+		return vg;
+	}
 
-		if (kind == View.Kind.SearchView) {
-			vg.type = ViewItem.Type.TableColumn;
-			view.getViewGlueList().add(vg);
-			return;
-		}
-
-		// if (Collection.class.isAssignableFrom(fld.getType())) {
-		// vg.type = ViewItem.Type.Table;
-		// vg.clazz = (Class) ((ParameterizedType) fld.getGenericType())
-		// .getActualTypeArguments()[0];
-		// } else
-		if (Ref.class.isAssignableFrom(fld.getType())) {
-			vg.type = ViewItem.Type.CompleteBox;
-		} else if (IEnum.class.isAssignableFrom(fld.getType())) {
-			vg.type = ViewItem.Type.ComboBox;
-		} else if (fld.getType() == LocalDate.class) {
-			vg.type = ViewItem.Type.DateBox;
-		} else if (fld.getType() == Money.class) {
-			vg.type = ViewItem.Type.MoneyBox;
-		} else if (fld.getType() == String.class) {
-			vg.type = ViewItem.Type.TextBox;
-		} else if (fld.getType().isPrimitive()) {
-			if (fld.getType() == boolean.class
-					|| fld.getType() == Boolean.class)
-				vg.type = ViewItem.Type.CheckBox;
-			else
-				vg.type = ViewItem.Type.TextBox;
-		} else {
-			vg.type = ViewItem.Type.ComboBox;
-		}
-
-		view.getViewGlueList().add(vg);
-		if (vg.type == ViewItem.Type.Table && kind == View.Kind.EditView) {
-			// addTableButtons(vg, pt.isCollectionType());
+	protected void setFieldGlobals(com.crivano.juia.control.Field f,
+			Global juiaGlobal) {
+		if (juiaGlobal != null) {
+			f.singular = juiaGlobal.singular();
+			f.plural = juiaGlobal.plural();
+			f.gender = juiaGlobal.gender();
+			f.locator = juiaGlobal.locator();
 		}
 	}
 
@@ -234,63 +377,6 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		}
 
 		return s;
-	}
-
-	public void makeMenu() {
-		List<Class> classes = Juia.getClasses();
-		// try {
-		// //classes =
-		// getClassesForPackage("br.ufrj.cos.mda.cafedonuts.entities");
-		// classes = getClassesForPackage("entities");
-		// } catch (ClassNotFoundException e) {
-		// throw new Error(e);
-		// }
-
-		for (Class clazz : classes) {
-			int mods = clazz.getModifiers();
-			if (Modifier.isAbstract(mods))
-				continue;
-			Annotation[] aa = clazz.getAnnotations();
-			for (Annotation ann : aa) {
-				if (ann instanceof Menu) {
-					Menu juiaMenu = (Menu) ann;
-					String path[] = juiaMenu.caption().split(";");
-
-					ViewItem viPrevious = null;
-					for (String caption : path) {
-						boolean fLast = caption == path[path.length - 1];
-
-						if (!fLast) {
-							ViewItem viSearch = null;
-							for (ViewItem viOnList : view.getViewGlueList()) {
-								if (viOnList.caption.equals(caption)) {
-									viSearch = viOnList;
-									break;
-								}
-							}
-							if (viSearch != null) {
-								viPrevious = viSearch;
-								continue;
-							}
-						}
-
-						ViewItem vi = new ViewItem();
-						vi.caption = caption;
-						vi.type = ViewItem.Type.Menu;
-						vi.viRelated = viPrevious;
-						viPrevious = vi;
-						if (fLast) {
-							vi.hint = juiaMenu.hint();
-							vi.viewKind = juiaMenu.kind();
-						}
-						view.getViewGlueList().add(vi);
-					}
-				}
-			}
-
-		}
-
-		return;
 	}
 
 }
