@@ -25,6 +25,7 @@ import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
 import com.crivano.juia.html.control.BreadcrumbControl;
+import com.crivano.juia.html.control.ButtonControl;
 import com.crivano.juia.html.control.CheckBoxControl;
 import com.crivano.juia.html.control.CompleteBoxControl;
 import com.crivano.juia.html.control.DateBoxControl;
@@ -45,6 +46,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FieldSet;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
@@ -177,7 +179,9 @@ public class HtmlTemplateBuilder {
 					repeat.name + " = (" + repeat.name + " || []);"
 							+ repeat.name + ".push({});")) {
 				{
-					new NoTag(this, "Adicionar " + repeat.getSingular());
+					new I(this, new ClassAttribute("fa fa-plus"));
+					new NoTag(this, "&nbsp;");
+					new NoTag(this, repeat.getSingular());
 				}
 			};
 
@@ -186,6 +190,9 @@ public class HtmlTemplateBuilder {
 				k = renderControl(vi, k, prefix, repeat, fieldSet, row,
 						lastcol, footer);
 			}
+
+			ButtonControl.render(row, new ClassAttribute(
+					"col col-xs-12 col-md-1"), "trash", null, repeat.name);
 		} else if (control instanceof Sidebar) {
 			final Sidebar sidebar = (Sidebar) control;
 
