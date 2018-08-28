@@ -1,5 +1,7 @@
 package com.crivano.juia.html.control;
 
+import javax.validation.constraints.NotNull;
+
 import com.crivano.juia.annotations.Global.Gender;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.html.HtmlTemplateBuilder;
@@ -62,6 +64,11 @@ public class CompleteBoxControl {
 										"form-control angucomplete-ctrl"),
 								new Id(vi.fld.getName()), new Name(vi.fld
 										.getName()));
+
+						if (vi.fld.isAnnotationPresent(NotNull.class))
+							div.addAttributes(new CustomAttribute(
+									"field-required", "true"));
+
 						HtmlTemplateBuilder.addAttr(vi.attr, div);
 					}
 				};

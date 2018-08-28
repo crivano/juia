@@ -1,5 +1,7 @@
 package com.crivano.juia.html.control;
 
+import javax.validation.constraints.NotNull;
+
 import com.crivano.juia.annotations.Edit;
 import com.crivano.juia.annotations.EditKindEnum;
 import com.crivano.juia.control.FieldText;
@@ -12,6 +14,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
@@ -41,6 +44,10 @@ public class TextBoxControl {
 									new CustomAttribute("ng-model", vi.name),
 									new Name(vi.fld.getName()));
 						}
+						if (vi.fld.isAnnotationPresent(NotNull.class))
+							input.addAttributes(new CustomAttribute(
+									"ng-required", "true"));
+
 						HtmlTemplateBuilder.addAttr(vi.attr, input);
 					}
 				};
