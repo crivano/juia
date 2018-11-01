@@ -64,7 +64,7 @@ public class MultipleSelectControl {
 								new CustomAttribute("ng-init", vi.name + "=[]"),
 								new CustomAttribute(
 										"extra-settings",
-										"{smartButtonMaxItems : 3, buttonClasses:'form-control multiselect-button', externalIdProp:'strings'}"),
+										"{smartButtonMaxItems: 1, buttonClasses:'form-control multiselect-button', externalIdProp:'strings'}"),
 								new CustomAttribute(
 										"translation-texts",
 										"{checkAll:'Marcar todos', uncheckAll:'Desmarcar todos', selectionCount:'marcados', searchPlaceholder:'Pesquisar...', buttonDefaultText:'Selecionar', dynamicButtonTextSuffix:'marcados'}")) {

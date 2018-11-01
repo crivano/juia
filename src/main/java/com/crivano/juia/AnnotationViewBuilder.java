@@ -27,10 +27,12 @@ import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.control.FieldDate;
 import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.FieldInteger;
 import com.crivano.juia.control.FieldMoney;
 import com.crivano.juia.control.FieldMultipleSelect;
 import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.control.FieldRefSelect;
+import com.crivano.juia.control.FieldSelect;
 import com.crivano.juia.control.FieldText;
 import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
@@ -222,10 +224,16 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		} else if (fld.getType() == Money.class) {
 			vg = new FieldMoney();
 		} else if (fld.getType() == String.class) {
-			vg = new FieldText();
+			if (juiaEdit != null && juiaEdit.kind() == EditKindEnum.SELECT)
+				vg = new FieldSelect(juiaEdit.init(), juiaEdit.options());
+			else
+				vg = new FieldText();
 		} else if (fld.getType() == Double.class
 				|| fld.getType() == Float.class) {
 			vg = new FieldNumeric();
+		} else if (fld.getType() == Long.class
+				|| fld.getType() == Integer.class) {
+			vg = new FieldInteger();
 		} else if (fld.getType().isPrimitive()) {
 			if (fld.getType() == boolean.class
 					|| fld.getType() == Boolean.class)
@@ -263,6 +271,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				setFieldGlobals(f, juiaGlobal);
 				f.attr = juiaEdit.attr();
 				f.attrContainer = juiaEdit.attrContainer();
+				f.attrItem = juiaEdit.attrItem();
 			}
 			vg.newRow = juiaEdit.newRow();
 			if (juiaFieldSet != null) {

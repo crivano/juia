@@ -10,11 +10,11 @@ import com.crivano.juia.html.Utils;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
-import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.TextArea;
@@ -38,9 +38,15 @@ public class TextBoxControl {
 									new CustomAttribute("ng-model", vi.name),
 									new Name(vi.fld.getName()));
 						} else {
-							input = new Input(this, new Type("text"),
-									new ClassAttribute("form-control"), new Id(
-											vi.fld.getName()),
+							AbstractAttribute attrType = HtmlTemplateBuilder
+									.getAttr("type", vi.attr, null, null);
+							Type type;
+							if (attrType != null)
+								type = new Type(attrType.getAttributeValue());
+							else
+								type = new Type("text");
+							input = new Input(this, type, new ClassAttribute(
+									"form-control"), new Id(vi.fld.getName()),
 									new CustomAttribute("ng-model", vi.name),
 									new Name(vi.fld.getName()));
 						}

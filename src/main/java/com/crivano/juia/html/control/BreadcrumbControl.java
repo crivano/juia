@@ -46,8 +46,8 @@ public class BreadcrumbControl {
 											this,
 											new Name("Pessoa"),
 											new ClassAttribute(
-													"sky-form col col-xs-12 col-sm-6 col-md-3 col-lg-2"),
-											new Style("border: none")) {
+													"sky-form col col-xs-12 col-sm-6 col-md-3 col-lg-2 no-print"),
+											new Style("border: none;")) {
 										{
 											new Label(
 													this,

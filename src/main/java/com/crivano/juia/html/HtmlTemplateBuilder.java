@@ -15,10 +15,12 @@ import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.control.FieldDate;
 import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.FieldInteger;
 import com.crivano.juia.control.FieldMoney;
 import com.crivano.juia.control.FieldMultipleSelect;
 import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.control.FieldRefSelect;
+import com.crivano.juia.control.FieldSelect;
 import com.crivano.juia.control.FieldText;
 import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
@@ -30,11 +32,13 @@ import com.crivano.juia.html.control.CheckBoxControl;
 import com.crivano.juia.html.control.CompleteBoxControl;
 import com.crivano.juia.html.control.DateBoxControl;
 import com.crivano.juia.html.control.FileControl;
+import com.crivano.juia.html.control.IntegerControl;
 import com.crivano.juia.html.control.MoneyBoxControl;
 import com.crivano.juia.html.control.MultipleSelectControl;
 import com.crivano.juia.html.control.NumericControl;
 import com.crivano.juia.html.control.RefSelectControl;
 import com.crivano.juia.html.control.SelectControl;
+import com.crivano.juia.html.control.StringSelectControl;
 import com.crivano.juia.html.control.TextBoxControl;
 import com.crivano.juia.html.control.TopicControl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -207,10 +211,14 @@ public class HtmlTemplateBuilder {
 			CompleteBoxControl.render(row, col, (FieldComplete) control);
 		} else if (control instanceof FieldRefSelect) {
 			RefSelectControl.render(row, col, (FieldRefSelect) control);
+		} else if (control instanceof FieldSelect) {
+			StringSelectControl.render(row, col, (FieldSelect) control);
 		} else if (control instanceof FieldFile) {
 			FileControl.render(row, col, (FieldFile) control);
 		} else if (control instanceof FieldText) {
 			TextBoxControl.render(row, col, (FieldText) control);
+		} else if (control instanceof FieldInteger) {
+			IntegerControl.render(row, col, (FieldInteger) control);
 		} else if (control instanceof FieldNumeric) {
 			NumericControl.render(row, col, (FieldNumeric) control);
 		} else if (control instanceof Topic) {
@@ -247,7 +255,7 @@ public class HtmlTemplateBuilder {
 			}
 			TBody tbody = new TBody(table);
 			Tr trb = new Tr(tbody, new CustomAttribute("dir-paginate",
-					"data in list | filter: filter | itemsPerPage:5"),
+					"data in list | filter: filter | itemsPerPage:20"),
 					tableColumn.skipShow ? new CustomAttribute("ng-click",
 							"edit(data.key)") : new CustomAttribute("ng-click",
 							"show(data.key)"));
@@ -263,7 +271,7 @@ public class HtmlTemplateBuilder {
 
 			return i;
 		} else if (control instanceof ButtonDelete) {
-			new Button(footer, new ClassAttribute("btn-u btn-u-red"),
+			new Button(footer, new ClassAttribute("btn-u btn-u-red no-print"),
 					new CustomAttribute("ng-click", "remove()"),
 					new CustomAttribute("ng-show", "data.id||false")) {
 				{
@@ -271,26 +279,26 @@ public class HtmlTemplateBuilder {
 				}
 			};
 		} else if (control instanceof ButtonNew) {
-			new Button(footer,
-					new ClassAttribute("btn-u btn-u-blue pull-right"),
-					new Style("margin-left: 1em;"), new CustomAttribute(
-							"ng-click", "create()")) {
+			new Button(footer, new ClassAttribute(
+					"btn-u btn-u-blue pull-right no-print"), new Style(
+					"margin-left: 1em;"), new CustomAttribute("ng-click",
+					"create()")) {
 				{
 					new NoTag(this, "Criar");// + container.getSingular());
 				}
 			};
 		} else if (control instanceof ButtonSave) {
-			new Button(footer,
-					new ClassAttribute("btn-u btn-u-blue pull-right"),
-					new Style("margin-left: 1em;"), new CustomAttribute(
-							"ng-click", "save()")) {
+			new Button(footer, new ClassAttribute(
+					"btn-u btn-u-blue pull-right no-print"), new Style(
+					"margin-left: 1em;"), new CustomAttribute("ng-click",
+					"save()")) {
 				{
 					new NoTag(this, "Salvar");
 				}
 			};
 		} else if (control instanceof ButtonCancel) {
 			new Button(footer, new ClassAttribute(
-					"btn-u btn-u-default pull-right"), new Style(
+					"btn-u btn-u-default pull-right no-print"), new Style(
 					"margin-left: 1em;"), new CustomAttribute("ng-click",
 					"cancel()")) {
 				{
@@ -301,7 +309,8 @@ public class HtmlTemplateBuilder {
 		return i;
 	}
 
-	public static void addAttr(String[] attrs, AbstractHtml el) {
+	public static void addAttr(String[] attrs, AbstractHtml el, String find,
+			String replace) {
 		if (attrs == null)
 			return;
 		for (String s : attrs) {
@@ -313,9 +322,35 @@ public class HtmlTemplateBuilder {
 				attr = new CustomAttribute(s);
 			else
 				attr = new CustomAttribute(s.substring(0, split),
-						s.substring(split + 1));
+						(find != null ? s.substring(split + 1).replace(find,
+								replace) : s.substring(split + 1)));
 			el.addAttributes(attr);
 		}
+	}
+
+	public static AbstractAttribute getAttr(String attrName, String[] attrs,
+			String find, String replace) {
+		if (attrs == null)
+			return null;
+		for (String s : attrs) {
+			if (s.length() == 0)
+				continue;
+			AbstractAttribute attr;
+			int split = s.indexOf("=");
+			if (split == -1)
+				attr = new CustomAttribute(s);
+			else
+				attr = new CustomAttribute(s.substring(0, split),
+						(find != null ? s.substring(split + 1).replace(find,
+								replace) : s.substring(split + 1)));
+			if (attrName.equals(attr.getAttributeName()))
+				return attr;
+		}
+		return null;
+	}
+
+	public static void addAttr(String[] attrs, AbstractHtml el) {
+		addAttr(attrs, el, null, null);
 	}
 
 	protected static Div drawSidebar(Div divRow) {

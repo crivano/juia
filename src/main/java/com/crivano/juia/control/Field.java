@@ -12,6 +12,7 @@ public abstract class Field extends Control {
 
 	public String[] attr;
 	public String[] attrContainer;
+	public String[] attrItem;
 
 	public int size;
 	public boolean wrap;

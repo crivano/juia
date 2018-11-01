@@ -35,6 +35,8 @@ public @interface Edit {
 
 	String[] attrContainer() default "";
 
+	String[] attrItem() default "";
+
 	EditKindEnum kind() default EditKindEnum.DEFAULT;
 
 	String init() default "";

@@ -2,6 +2,8 @@ package com.crivano.juia.html.control;
 
 import javax.validation.constraints.NotNull;
 
+import br.com.xrp.util.FullSerialization;
+
 import com.crivano.juia.annotations.Global.Gender;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.html.HtmlTemplateBuilder;
@@ -42,7 +44,10 @@ public class CompleteBoxControl {
 								new CustomAttribute("match-class", "highlight"),
 								new CustomAttribute("template-url",
 										"/my-custom-template.html"),
-								new CustomAttribute("selected-object", vi.name),
+								new CustomAttribute("selected-object",
+										"selectedObject"),
+								new CustomAttribute("selected-object-data",
+										dadosDoModelo(vi)),
 								new CustomAttribute("initial-value", vi.name
 										+ ".originalObject"),
 								new CustomAttribute("remote-url", "app/"
@@ -70,6 +75,21 @@ public class CompleteBoxControl {
 									"field-required", "true"));
 
 						HtmlTemplateBuilder.addAttr(vi.attr, div);
+					}
+
+					protected String dadosDoModelo(final FieldComplete vi) {
+						if (vi.name.contains(".")) {
+							String[] split = vi.name.split("\\.", 2);
+							return "{context:"
+									+ split[0]
+									+ ", variable: '"
+									+ split[1]
+									+ "', full:"
+									+ (vi.fld
+											.getAnnotation(FullSerialization.class) != null)
+									+ "}";
+						} else
+							return "{variable: " + vi.name + "}";
 					}
 				};
 			}

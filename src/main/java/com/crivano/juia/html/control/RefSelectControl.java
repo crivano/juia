@@ -1,5 +1,7 @@
 package com.crivano.juia.html.control;
 
+import javax.validation.constraints.NotNull;
+
 import com.crivano.juia.annotations.Edit;
 import com.crivano.juia.annotations.Global.Gender;
 import com.crivano.juia.control.FieldRefSelect;
@@ -38,6 +40,11 @@ public class RefSelectControl {
 							new NoTag(option, "[Nenhuma]");
 						else
 							new NoTag(option, "[Nenhum]");
+
+						if (vi.fld.isAnnotationPresent(NotNull.class))
+							select.addAttributes(new CustomAttribute(
+									"ng-required", "true"));
+						HtmlTemplateBuilder.addAttr(vi.attr, select);
 					}
 				};
 			}

@@ -1,5 +1,7 @@
 package com.crivano.juia.html.control;
 
+import javax.validation.constraints.NotNull;
+
 import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;
@@ -29,6 +31,9 @@ public class NumericControl {
 										vi.fld.getName()), new CustomAttribute(
 										"ng-model", vi.name), new Name(
 										vi.fld.getName()));
+						if (vi.fld.isAnnotationPresent(NotNull.class))
+							input.addAttributes(new CustomAttribute(
+									"ng-required", "true"));
 						HtmlTemplateBuilder.addAttr(vi.attr, input);
 					}
 				};
