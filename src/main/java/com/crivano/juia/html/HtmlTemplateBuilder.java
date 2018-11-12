@@ -291,7 +291,7 @@ public class HtmlTemplateBuilder {
 			new Button(footer, new ClassAttribute(
 					"btn-u btn-u-blue pull-right no-print"), new Style(
 					"margin-left: 1em;"), new CustomAttribute("ng-click",
-					"save()")) {
+					"save()"), new CustomAttribute("formnovalidate")) {
 				{
 					new NoTag(this, "Salvar");
 				}
