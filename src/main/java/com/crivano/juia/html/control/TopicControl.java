@@ -13,9 +13,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class TopicControl {
 	public static void render(Div parent, ClassAttribute col, final Topic vi) {
-		String name = vi.name
-				+ ("Ref".equals(vi.fld.getType().getSimpleName()) ? ".title"
-						: "");
+		String name = vi.name + ("Ref".equals(vi.fld.getType().getSimpleName()) ? ".title" : "");
 		String value = name;
 		if (vi.value != null && vi.value.trim().length() > 0) {
 			String s = vi.value;
@@ -44,7 +42,6 @@ public class TopicControl {
 			sb.append("'-' }}");
 			new NoTag(p, sb.toString());
 		} else
-			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value
-					+ ".title : " + value + "}}");
+			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
 	}
 }

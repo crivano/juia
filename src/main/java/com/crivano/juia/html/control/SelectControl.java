@@ -20,46 +20,29 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class SelectControl {
-	public static void render(Div parent, ClassAttribute col,
-			final FieldCombo vi) {
-		Section section = new Section(parent, col) {
+	public static void render(Div parent, ClassAttribute col, final FieldCombo vi) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
-				Utils.label(this, vi);
-
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("select"),
-						new Style("padding-bottom: 1px;")) {
+				Select select = new Select(Utils.label(this, vi), new CustomAttribute("ng-model", vi.name),
+						new ClassAttribute("form-control")) {
 					{
 
-						Select select = new Select(this, new CustomAttribute(
-								"ng-model", vi.name), new ClassAttribute(
-								"form-control")) {
-							{
-
-								if (IEnum.class.isAssignableFrom(vi.fld
-										.getType())) {
-									for (final IEnum v : (IEnum[]) vi.fld
-											.getType().getEnumConstants()) {
-										Option option = new Option(this,
-												new Value(v.getCode())) {
-											{
-												new NoTag(this, v.getDescr());
-											}
-										};
-										HtmlTemplateBuilder.addAttr(
-												vi.attrItem, option,
-												"__VALUE__", v.getCode());
+						if (IEnum.class.isAssignableFrom(vi.fld.getType())) {
+							for (final IEnum v : (IEnum[]) vi.fld.getType().getEnumConstants()) {
+								Option option = new Option(this, new Value(v.getCode())) {
+									{
+										new NoTag(this, v.getDescr());
 									}
-								}
+								};
+								HtmlTemplateBuilder.addAttr(vi.attrItem, option, "__VALUE__", v.getCode());
 							}
-						};
-						if (vi.fld.isAnnotationPresent(NotNull.class))
-							select.addAttributes(new CustomAttribute(
-									"ng-required", "true"));
-						HtmlTemplateBuilder.addAttr(vi.attr, select);
-						new I(this);
+						}
 					}
 				};
+				if (vi.fld.isAnnotationPresent(NotNull.class))
+					select.addAttributes(new CustomAttribute("ng-required", "true"));
+				HtmlTemplateBuilder.addAttr(vi.attr, select);
+				new I(this);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

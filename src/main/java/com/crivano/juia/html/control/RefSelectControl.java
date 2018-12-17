@@ -20,33 +20,23 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class RefSelectControl {
-	public static void render(Div parent, ClassAttribute col,
-			final FieldRefSelect vi) {
-		Section section = new Section(parent, col) {
+	public static void render(Div parent, ClassAttribute col, final FieldRefSelect vi) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
-				Utils.label(this, vi);
+				Select select = new Select(Utils.label(this, vi), new ClassAttribute("form-control"),
+						new CustomAttribute("ng-model", vi.name), new CustomAttribute("ng-init", vi.getInit()),
+						new CustomAttribute("ng-options", vi.getOptions()));
+				HtmlTemplateBuilder.addAttr(vi.attr, select);
+				new I(this);
+				Option option = new Option(select, new Value(""));
+				if (vi.gender == Gender.SHE)
+					new NoTag(option, "[Nenhuma]");
+				else
+					new NoTag(option, "[Nenhum]");
 
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("select")) {
-					{
-						Select select = new Select(this, new CustomAttribute(
-								"ng-model", vi.name), new CustomAttribute(
-								"ng-init", vi.getInit()), new CustomAttribute(
-								"ng-options", vi.getOptions()));
-						HtmlTemplateBuilder.addAttr(vi.attr, select);
-						new I(this);
-						Option option = new Option(select, new Value(""));
-						if (vi.gender == Gender.SHE)
-							new NoTag(option, "[Nenhuma]");
-						else
-							new NoTag(option, "[Nenhum]");
-
-						if (vi.fld.isAnnotationPresent(NotNull.class))
-							select.addAttributes(new CustomAttribute(
-									"ng-required", "true"));
-						HtmlTemplateBuilder.addAttr(vi.attr, select);
-					}
-				};
+				if (vi.fld.isAnnotationPresent(NotNull.class))
+					select.addAttributes(new CustomAttribute("ng-required", "true"));
+				HtmlTemplateBuilder.addAttr(vi.attr, select);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

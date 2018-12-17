@@ -25,8 +25,7 @@ public class MultipleSelectControl {
 		String label;
 	}
 
-	public static void render(Div parent, ClassAttribute col,
-			final FieldMultipleSelect vi) {
+	public static void render(Div parent, ClassAttribute col, final FieldMultipleSelect vi) {
 		List<IdLabel> l = new ArrayList<>();
 
 		Type type = vi.fld.getGenericType();
@@ -49,33 +48,21 @@ public class MultipleSelectControl {
 		Gson gson = new GsonBuilder().create();
 		final String options = gson.toJson(l).replace("\"", "'");
 
-		Section section = new Section(parent, col) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
-				Utils.label(this, vi);
-
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("select")) {
+				Div div = new Div(Utils.label(this, vi), new CustomAttribute("ng-dropdown-multiselect"),
+						new CustomAttribute("options", options), new CustomAttribute("selected-model", vi.name),
+						new CustomAttribute("ng-init", vi.name + "=[]"),
+						new CustomAttribute("extra-settings",
+								"{smartButtonMaxItems: 1, buttonClasses:'form-control multiselect-button', externalIdProp:'strings'}"),
+						new CustomAttribute("translation-texts",
+								"{checkAll:'Marcar todos', uncheckAll:'Desmarcar todos', selectionCount:'marcados', searchPlaceholder:'Pesquisar...', buttonDefaultText:'Selecionar', dynamicButtonTextSuffix:'marcados'}")) {
 					{
-						Div div = new Div(
-								this,
-								new CustomAttribute("ng-dropdown-multiselect"),
-								new CustomAttribute("options", options),
-								new CustomAttribute("selected-model", vi.name),
-								new CustomAttribute("ng-init", vi.name + "=[]"),
-								new CustomAttribute(
-										"extra-settings",
-										"{smartButtonMaxItems: 1, buttonClasses:'form-control multiselect-button', externalIdProp:'strings'}"),
-								new CustomAttribute(
-										"translation-texts",
-										"{checkAll:'Marcar todos', uncheckAll:'Desmarcar todos', selectionCount:'marcados', searchPlaceholder:'Pesquisar...', buttonDefaultText:'Selecionar', dynamicButtonTextSuffix:'marcados'}")) {
-							{
 
-							}
-						};
-						HtmlTemplateBuilder.addAttr(vi.attr, div);
-						new I(this);
 					}
 				};
+				HtmlTemplateBuilder.addAttr(vi.attr, div);
+				new I(this);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

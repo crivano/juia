@@ -23,40 +23,28 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class TextBoxControl {
 	public static void render(Div parent, ClassAttribute col, final FieldText vi) {
-		Section section = new Section(parent, col) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
-				Utils.label(this, vi);
+				Label lbl = Utils.label(this, vi);
+				AbstractHtml input;
+				Edit edit = vi.fld.getAnnotation(Edit.class);
+				if (edit.kind() == EditKindEnum.TEXTAREA) {
+					input = new TextArea(lbl, new ClassAttribute("form-control"), new Id(vi.fld.getName()),
+							new CustomAttribute("ng-model", vi.name), new Name(vi.fld.getName()));
+				} else {
+					AbstractAttribute attrType = HtmlTemplateBuilder.getAttr("type", vi.attr, null, null);
+					Type type;
+					if (attrType != null)
+						type = new Type(attrType.getAttributeValue());
+					else
+						type = new Type("text");
+					input = new Input(lbl, type, new ClassAttribute("form-control"), new Id(vi.fld.getName()),
+							new CustomAttribute("ng-model", vi.name), new Name(vi.fld.getName()));
+				}
+				if (vi.fld.isAnnotationPresent(NotNull.class))
+					input.addAttributes(new CustomAttribute("ng-required", "true"));
 
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("input")) {
-					{
-						AbstractHtml input;
-						Edit edit = vi.fld.getAnnotation(Edit.class);
-						if (edit.kind() == EditKindEnum.TEXTAREA) {
-							input = new TextArea(this, new ClassAttribute(
-									"form-control"), new Id(vi.fld.getName()),
-									new CustomAttribute("ng-model", vi.name),
-									new Name(vi.fld.getName()));
-						} else {
-							AbstractAttribute attrType = HtmlTemplateBuilder
-									.getAttr("type", vi.attr, null, null);
-							Type type;
-							if (attrType != null)
-								type = new Type(attrType.getAttributeValue());
-							else
-								type = new Type("text");
-							input = new Input(this, type, new ClassAttribute(
-									"form-control"), new Id(vi.fld.getName()),
-									new CustomAttribute("ng-model", vi.name),
-									new Name(vi.fld.getName()));
-						}
-						if (vi.fld.isAnnotationPresent(NotNull.class))
-							input.addAttributes(new CustomAttribute(
-									"ng-required", "true"));
-
-						HtmlTemplateBuilder.addAttr(vi.attr, input);
-					}
-				};
+				HtmlTemplateBuilder.addAttr(vi.attr, input);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

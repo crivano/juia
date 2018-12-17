@@ -11,17 +11,15 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class ButtonControl {
-	public static void render(final Div parent, ClassAttribute col,
-			final String icon, final String name, final String repeatName) {
-		Section section = new Section(parent, col);
+	public static void render(final Div parent, ClassAttribute col, final String icon, final String name,
+			final String repeatName) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue()));
 		Label label = Utils.label(section, null);
 
-		Label label2 = new Label(section, new ClassAttribute("input"));
+		Label label2 = new Label(section, new ClassAttribute("input float-right"));
 
-		new Button(label2,
-				new ClassAttribute("btn-u btn-u-default pull-right"),
-				new CustomAttribute("ng-click", repeatName
-						+ ".splice($index, 1);")) {
+		new Button(label2, new ClassAttribute("btn btn-light"),
+				new CustomAttribute("ng-click", repeatName + ".splice($index, 1);")) {
 			{
 				if (icon != null)
 					new I(this, new ClassAttribute("fa fa-trash"));

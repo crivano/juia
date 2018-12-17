@@ -19,7 +19,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 public class IntegerControl {
 	public static void render(Div parent, ClassAttribute col,
 			final FieldInteger vi) {
-		Section section = new Section(parent, col) {
+		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
 				Utils.label(this, vi);
 

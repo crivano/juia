@@ -13,21 +13,21 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class CheckBoxControl {
-	public static void render(Div parent, ClassAttribute col,
-			final FieldCheck vi) {
-		Section section = new Section(parent, col) {
+	public static void render(Div parent, ClassAttribute col, final FieldCheck vi) {
+		Div div = new Div(parent, col) {
 			{
-				new Label(this, new ClassAttribute("checkbox")) {
+				Section section = new Section(this, new ClassAttribute("form-check form-group")) {
 					{
-						Input input = new Input(this, new Type("checkbox"),
+						Input input = new Input(this, new Type("checkbox"), new ClassAttribute("form-check-input"),
 								new CustomAttribute("ng-model", vi.name));
 						HtmlTemplateBuilder.addAttr(vi.attr, input);
-						new I(this);
-						new NoTag(this, vi.caption);
+						Label lbl = new Label(this, new ClassAttribute("form-check-label"));
+						new NoTag(lbl, vi.caption);
+//				new I(this);
 					}
 				};
+				HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
 	}
 }
