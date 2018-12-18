@@ -94,6 +94,7 @@ public class HtmlTemplateBuilder {
 		AbstractHtml footer = null;
 		Div row = null;
 		Div lastcol = null;
+		Div divMainRow = null;
 
 		if (kind == View.Kind.EditView) {
 			form = new Form(divWrapper, new Id("form"), new Name(o.getClass().getSimpleName()),
@@ -101,8 +102,8 @@ public class HtmlTemplateBuilder {
 		} else if (kind == View.Kind.SearchView) {
 			row = new Div(divWrapper, new ClassAttribute("row", "juia", "main-search-row"));
 		} else if (kind == View.Kind.ShowView) {
-			divWrapper = new Div(divWrapper, new ClassAttribute("row", "juia", "main-show-row"));
-			Div col = new Div(divWrapper, new ClassAttribute("col", "col-md-8", "main-view"));
+			divMainRow = new Div(divWrapper, new ClassAttribute("row", "juia", "main-show-row"));
+			Div col = new Div(divMainRow, new ClassAttribute("col", "col-md-8", "main-view"));
 			row = new Div(col, new Id("content"), new ClassAttribute("row"));
 		}
 
@@ -137,7 +138,7 @@ public class HtmlTemplateBuilder {
 				else
 					footer = new Div(row, new Id("footer"), new ClassAttribute("col col-sm-12"));
 			if (vi instanceof com.crivano.juia.control.Sidebar) {
-				row = drawSidebar(divWrapper);
+				row = drawSidebar(divMainRow);
 			}
 
 			i = renderControl(vi, i, prefix, view, fieldSet, row, lastcol, footer);
@@ -166,7 +167,7 @@ public class HtmlTemplateBuilder {
 			Div hc = new Div(fieldSet.getChildren().get(0).getChildren().get(0),
 					new ClassAttribute("col col-auto ml-auto"));
 
-			new Button(hc, new ClassAttribute("juia btn btn-sm btn-light float-rightx"), new Style("margin-left: 1em;"),
+			new Button(hc, new ClassAttribute("juia btn btn-sm btn-secondary"), new Style("margin-left: 1em;"),
 					new CustomAttribute("ng-click",
 							repeat.name + " = (" + repeat.name + " || []);" + repeat.name + ".push({});")) {
 				{
