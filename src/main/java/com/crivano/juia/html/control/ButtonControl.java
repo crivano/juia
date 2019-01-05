@@ -12,17 +12,17 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class ButtonControl {
 	public static void render(final Div parent, ClassAttribute col, final String icon, final String name,
-			final String repeatName) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue()));
-		Label label = Utils.label(section, null);
+			final String repeatName, final String click, final String disabled, final String clazz) {
+//		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue()));
+//		Label label = Utils.label(section, null);
+//
+//		Label label2 = new Label(section, new ClassAttribute("input float-right"));
 
-		Label label2 = new Label(section, new ClassAttribute("input float-right"));
-
-		new Button(label2, new ClassAttribute("btn btn-light"),
-				new CustomAttribute("ng-click", repeatName + ".splice($index, 1);")) {
+		new Button(parent, new ClassAttribute(clazz), new CustomAttribute("ng-click", click),
+				new CustomAttribute("ng-disabled", disabled)) {
 			{
 				if (icon != null)
-					new I(this, new ClassAttribute("fa fa-trash"));
+					new I(this, new ClassAttribute("fa fa-" + icon));
 				if (name != null)
 					new NoTag(this, name);
 			}

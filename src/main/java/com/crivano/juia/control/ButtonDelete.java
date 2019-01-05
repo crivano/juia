@@ -6,4 +6,9 @@ public class ButtonDelete extends Button {
 		super(caption);
 	}
 
+	@Override
+	public String toString() {
+		return "{\"control\":\"ButtonDelete\"}";
+	}
+
 }

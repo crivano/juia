@@ -6,4 +6,9 @@ public class Button extends Control {
 	public Button(String caption) {
 		this.caption = caption;
 	}
+
+	@Override
+	public String toString() {
+		return "{\"control\":\"Button\",\"caption\":\"" + this.caption + "\"}";
+	}
 }

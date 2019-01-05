@@ -6,4 +6,9 @@ public class ButtonBack extends Button {
 		super(caption);
 	}
 
+
+	@Override
+	public String toString() {
+		return "{\"control\":\"ButtonBack\"}";
+	}
 }

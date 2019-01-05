@@ -26,7 +26,6 @@ import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
-import com.crivano.juia.html.control.TitleControl;
 import com.crivano.juia.html.control.ButtonControl;
 import com.crivano.juia.html.control.CheckBoxControl;
 import com.crivano.juia.html.control.CompleteBoxControl;
@@ -40,10 +39,12 @@ import com.crivano.juia.html.control.RefSelectControl;
 import com.crivano.juia.html.control.SelectControl;
 import com.crivano.juia.html.control.StringSelectControl;
 import com.crivano.juia.html.control.TextBoxControl;
+import com.crivano.juia.html.control.TitleControl;
 import com.crivano.juia.html.control.TopicControl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.H2;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
+import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -54,8 +55,10 @@ import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FieldSet;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Footer;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Header;
+import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.tables.TBody;
 import com.webfirmframework.wffweb.tag.html.tables.THead;
@@ -111,18 +114,7 @@ public class HtmlTemplateBuilder {
 			final Control vi = view.getControls().get(i);
 			if (kind == View.Kind.EditView) {
 				if (fieldSet == null || vi.newGroup != null || vi instanceof Repeat) {
-					fieldSet = new FieldSet(form, new Title(vi.newGroup));
-					addAttr(vi.attrGroup, fieldSet);
-					if (vi.newGroup != null || vi instanceof Repeat) {
-						String s = vi.newGroup;
-						if (s == null && vi instanceof Repeat)
-							s = ((Repeat) vi).getPlural();
-						final String caption = s;
-						Header header = new Header(fieldSet, new ClassAttribute("juia form-group"));
-						Div hr = new Div(header, new ClassAttribute("row align-items-center"));
-						Div hc = new Div(hr, new ClassAttribute("col col-auto"));
-						NoTag noTag = new NoTag(hc, caption);
-					}
+					fieldSet = drawFieldset(form, vi);
 				}
 				if (row == null || vi.newRow || vi.newGroup != null || vi instanceof Repeat) {
 					row = new Div(fieldSet, new ClassAttribute("row"));
@@ -150,6 +142,23 @@ public class HtmlTemplateBuilder {
 		return divWrapper;
 	}
 
+	private static FieldSet drawFieldset(AbstractHtml form, final Control vi) {
+		FieldSet fieldSet;
+		fieldSet = new FieldSet(form, new Title(vi.newGroup));
+		addAttr(vi.attrGroup, fieldSet);
+		if (vi.newGroup != null || vi instanceof Repeat) {
+			String s = vi.newGroup;
+			if (s == null && vi instanceof Repeat)
+				s = ((Repeat) vi).getPlural();
+			final String caption = s;
+			Header header = new Header(fieldSet, new ClassAttribute("juia form-group"));
+			Div hr = new Div(header, new ClassAttribute("row align-items-center"));
+			Div hc = new Div(hr, new ClassAttribute("col col-auto"));
+			NoTag noTag = new NoTag(hc, caption);
+		}
+		return fieldSet;
+	}
+
 	static protected int renderControl(final Control control, int i, final String prefix,
 			final ControlContainer container, FieldSet fieldSet, Div row, Div lastcol, AbstractHtml footer) {
 		ClassAttribute col = null;
@@ -167,22 +176,56 @@ public class HtmlTemplateBuilder {
 			Div hc = new Div(fieldSet.getChildren().get(0).getChildren().get(0),
 					new ClassAttribute("col col-auto ml-auto"));
 
-			new Button(hc, new ClassAttribute("juia btn btn-sm btn-secondary"), new Style("margin-left: 1em;"),
-					new CustomAttribute("ng-click",
-							repeat.name + " = (" + repeat.name + " || []);" + repeat.name + ".push({});")) {
-				{
-					new I(this, new ClassAttribute("fa fa-plus"));
-					new NoTag(this, "&nbsp;");
-					new NoTag(this, repeat.getSingular());
-				}
-			};
+			Button btnPlus = new Button(hc, new ClassAttribute("juia btn btn-sm btn-secondary"),
+					new Style("margin-left: 1em;"), new CustomAttribute("ng-click",
+							repeat.name + " = (" + repeat.name + " || []);" + repeat.name + ".push({});"));
+
+			new I(btnPlus, new ClassAttribute("fa fa-plus"));
+			new NoTag(btnPlus, "&nbsp;");
+			new NoTag(btnPlus, repeat.getSingular());
+
+			Div colToSidebar = new Div(row, new ClassAttribute("col col-auto"));
+			Section section = new Section(colToSidebar);
+			Label label = Utils.label(section, null);
+			Label label2 = new Label(section, new ClassAttribute("input float-right"));
+			Div btnGrp = new Div(label2, new ClassAttribute("btn-group"), new CustomAttribute("role", "group"));
+
+			Div btnDrop = new Div(btnGrp, new ClassAttribute("btn-group dropright"),
+					new CustomAttribute("role", "group"));
+
+			Button drop = new Button(btnDrop, new Id("dropBtn"),
+					new ClassAttribute("btn btn-secondary dropdown-toggle"),
+					new CustomAttribute("data-toggle", "dropdown"), new CustomAttribute("aria-haspopup", "true"),
+					new CustomAttribute("aria-expanded", "false"));
+			new NoTag(drop, "{{$index+1}}");
+			Div divDrop = new Div(btnDrop, new ClassAttribute("dropdown-menu pt-0 pb-0"),
+					new CustomAttribute("aria-labelledby", "dropBtn"));
+			ButtonControl.render(divDrop, new ClassAttribute(""), "fa fa-trash", null, repeat.name,
+					repeat.name + ".splice($index, 1);", null, "btn btn-link");
+			ButtonControl.render(
+					divDrop, new ClassAttribute(""), "fa fa-arrow-up", null, repeat.name, repeat.name + "[$index] = "
+							+ repeat.name + ".splice($index - 1, 1, " + repeat.name + "[$index])[0]",
+					"$index === 0", "btn btn-link");
+			ButtonControl.render(
+					divDrop, new ClassAttribute(""), "fa fa-arrow-down", null, repeat.name, repeat.name + "[$index] = "
+							+ repeat.name + ".splice($index + 1, 1, " + repeat.name + "[$index])[0]",
+					"$index === " + repeat.name + ".length - 1", "btn btn-link");
+
+			Div colToControls = new Div(row, new ClassAttribute("col"));
+			Div rowToControls = new Div(colToControls, new ClassAttribute("row"));
 
 			for (int k = 0; k < repeat.getControls().size(); k++) {
 				final Control vi = repeat.getControls().get(k);
-				k = renderControl(vi, k, prefix, repeat, fieldSet, row, lastcol, footer);
+				if (vi instanceof Repeat) {
+					FieldSet colRepeat = drawFieldset(rowToControls, vi);
+					colRepeat.addAttributes(new CustomAttribute("class", "col col-12"));
+					Div rowRepeat = new Div(colRepeat, new ClassAttribute("row"));
+
+					k = renderControl(vi, k, prefix, repeat, colRepeat, rowRepeat, lastcol, footer);
+				} else
+					k = renderControl(vi, k, prefix, repeat, fieldSet, rowToControls, lastcol, footer);
 			}
 
-			ButtonControl.render(row, new ClassAttribute("col col-12 col-md-1 ml-auto"), "trash", null, repeat.name);
 		} else if (control instanceof Sidebar) {
 			final Sidebar sidebar = (Sidebar) control;
 

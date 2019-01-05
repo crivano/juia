@@ -23,4 +23,9 @@ public abstract class Field extends Control {
 	public String locator;
 
 	public String value;
+
+	@Override
+	public String toString() {
+		return "{\"control\":\"Field\",\"locator\":\"" + this.locator + "\",\"singular\":\"" + this.singular + "\"}";
+	}
 }

@@ -6,4 +6,9 @@ public class ButtonCancel extends Button {
 		super(caption);
 	}
 
+	@Override
+	public String toString() {
+		return "{\"control\":\"ButtonCancel\"}";
+	}
+
 }

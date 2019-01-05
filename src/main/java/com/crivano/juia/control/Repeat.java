@@ -55,4 +55,11 @@ public class Repeat extends Control implements ControlContainer {
 	public void setControls(ArrayList<Control> controls) {
 		this.controls = controls;
 	}
+
+	@Override
+	public String toString() {
+		return "{\"control\":\"Repeat\",\"fldName\":\"" + this.fldName + "\",\"newGroup\":\"" + this.newGroup
+				+ "\",\"controls\":" + this.controls.toString() + "}";
+	}
+
 }
