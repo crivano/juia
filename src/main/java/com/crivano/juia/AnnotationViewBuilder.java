@@ -18,6 +18,7 @@ import com.crivano.juia.annotations.Edit;
 import com.crivano.juia.annotations.EditKindEnum;
 import com.crivano.juia.annotations.FieldSet;
 import com.crivano.juia.annotations.Global;
+import com.crivano.juia.annotations.GlobalClass;
 import com.crivano.juia.annotations.Search;
 import com.crivano.juia.annotations.Show;
 import com.crivano.juia.annotations.ShowGroup;
@@ -40,8 +41,7 @@ import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
 
 public class AnnotationViewBuilder extends ViewBuilder {
-	public void buildView(String prefix, Object o, View.Kind kind,
-			boolean fFrontView) {
+	public void buildView(String prefix, Object o, View.Kind kind, boolean fFrontView) {
 		view.setKind(kind);
 		Global juiaGlobal = o.getClass().getAnnotation(Global.class);
 		if (juiaGlobal != null) {
@@ -90,8 +90,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		return skipShow;
 	}
 
-	private void addViewItemsForObject(ControlContainer container,
-			String prefix, View.Kind kind, boolean detail, Class originalClass) {
+	private void addViewItemsForObject(ControlContainer container, String prefix, View.Kind kind, boolean detail,
+			Class originalClass) {
 		List<Class> classes = getClassHierarchy(originalClass);
 
 		// Verifica se existe alguma anotação de @Show ou @Detail, para saber se
@@ -107,23 +107,19 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				Show juiaShow = fld.getAnnotation(Show.class);
 				Edit juiaEdit = fld.getAnnotation(Edit.class);
 				Detail juiaDetail = fld.getAnnotation(Detail.class);
-				if (juiaSearch == null && juiaEdit == null && juiaShow == null
-						&& juiaDetail == null)
+				if (juiaSearch == null && juiaEdit == null && juiaShow == null && juiaDetail == null)
 					continue;
 
 				// Embedded object
 				//
 				if (kind == View.Kind.EditView && juiaEdit != null) {
-					if (!fld.getType().isEnum()
-							&& fld.getType().isAnnotationPresent(Global.class)) {
+					if (!fld.getType().isEnum() && fld.getType().isAnnotationPresent(Global.class)) {
 						int nextItem = container.getControls().size();
-						addViewItemsForObject(container, prefix + fld.getName()
-								+ ".", kind, detail, fld.getType());
+						addViewItemsForObject(container, prefix + fld.getName() + ".", kind, detail, fld.getType());
 
 						// New group
 						if (container.getControls().size() > nextItem) {
-							FieldSet juiaFieldSet = fld
-									.getAnnotation(FieldSet.class);
+							FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
 							Control vg = container.getControls().get(nextItem);
 							if (vg.newGroup == null && juiaFieldSet != null) {
 								vg.newGroup = juiaFieldSet.caption();
@@ -136,8 +132,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 
 				// Embedded List, build a repeat component on a EditView
 				//
-				if (kind == View.Kind.EditView && juiaEdit != null
-						&& List.class.isAssignableFrom(fld.getType())) {
+				if (kind == View.Kind.EditView && juiaEdit != null && List.class.isAssignableFrom(fld.getType())) {
 					Repeat repeat = new Repeat(fld.getName());
 					repeat.name = prefix + fld.getName();
 					FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
@@ -146,10 +141,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 						repeat.attrGroup = juiaFieldSet.attr();
 					}
 					container.getControls().add(repeat);
-					Class clazzList = (Class) ((ParameterizedType) fld
-							.getGenericType()).getActualTypeArguments()[0];
-					Global juiaGlobal = (Global) clazzList
-							.getAnnotation(Global.class);
+					Class clazzList = (Class) ((ParameterizedType) fld.getGenericType()).getActualTypeArguments()[0];
+					Global juiaGlobal = (Global) clazzList.getAnnotation(Global.class);
 					if (juiaGlobal != null) {
 						repeat.setSingular(juiaGlobal.singular());
 						repeat.setPlural(juiaGlobal.plural());
@@ -158,12 +151,11 @@ public class AnnotationViewBuilder extends ViewBuilder {
 							repeat.newGroup = juiaGlobal.plural();
 					}
 					int nextItem = container.getControls().size();
-					addViewItemsForObject(repeat, fld.getName() + "Item.",
-							kind, detail, clazzList);
+					addViewItemsForObject(repeat, fld.getName() + "Item.", kind, detail, clazzList);
 					continue;
 				}
-				Control control = addViewItem(prefix, kind, detail, fld,
-						juiaSearch, juiaEdit, juiaShow, juiaDetail, skipShow);
+				Control control = addViewItem(prefix, kind, detail, fld, juiaSearch, juiaEdit, juiaShow, juiaDetail,
+						skipShow);
 				if (control != null)
 					container.getControls().add(control);
 			}
@@ -172,19 +164,16 @@ public class AnnotationViewBuilder extends ViewBuilder {
 
 	protected static List<Class> getClassHierarchy(Class baseClass) {
 		List<Class> classes = new ArrayList<Class>();
-		for (Class clazz = baseClass; clazz != Object.class; clazz = clazz
-				.getSuperclass()) {
+		for (Class clazz = baseClass; clazz != Object.class; clazz = clazz.getSuperclass()) {
 			classes.add(0, clazz);
 		}
 		return classes;
 	}
 
-	private Control addViewItem(String prefix, View.Kind kind, boolean detail,
-			Field fld, Search juiaSearch, Edit juiaEdit, Show juiaShow,
-			Detail juiaDetail, boolean skipShow) {
+	private Control addViewItem(String prefix, View.Kind kind, boolean detail, Field fld, Search juiaSearch,
+			Edit juiaEdit, Show juiaShow, Detail juiaDetail, boolean skipShow) {
 		Control vg;
-		if (juiaSearch == null && juiaEdit == null && juiaShow == null
-				&& juiaDetail == null)
+		if (juiaSearch == null && juiaEdit == null && juiaShow == null && juiaDetail == null)
 			return null;
 
 		FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
@@ -192,13 +181,22 @@ public class AnnotationViewBuilder extends ViewBuilder {
 
 		// Get juiaGlobal for generic type
 		Global juiaGlobal = null;
-		Type type = fld.getGenericType();
-		if (type instanceof ParameterizedType) {
-			ParameterizedType pType = (ParameterizedType) type;
-			Type arg0 = pType.getActualTypeArguments()[0];
-			if (arg0 instanceof Class)
-				juiaGlobal = (Global) ((Class) arg0)
+		GlobalClass juiaGlobalClass = fld.getAnnotation(GlobalClass.class);
+		if (juiaGlobalClass != null) {
+			try {
+				juiaGlobal = (Global) (this.getClass().getClassLoader().loadClass(juiaGlobalClass.value()))
 						.getAnnotation(Global.class);
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("can't load @GlobalClass: " + juiaGlobalClass.value(), e);
+			}
+		} else {
+			Type type = fld.getGenericType();
+			if (type instanceof ParameterizedType) {
+				ParameterizedType pType = (ParameterizedType) type;
+				Type arg0 = pType.getActualTypeArguments()[0];
+				if (arg0 instanceof Class)
+					juiaGlobal = (Global) ((Class) arg0).getAnnotation(Global.class);
+			}
 		}
 
 		if (kind == View.Kind.SearchView) {
@@ -228,15 +226,12 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				vg = new FieldSelect(juiaEdit.init(), juiaEdit.options());
 			else
 				vg = new FieldText();
-		} else if (fld.getType() == Double.class
-				|| fld.getType() == Float.class) {
+		} else if (fld.getType() == Double.class || fld.getType() == Float.class) {
 			vg = new FieldNumeric();
-		} else if (fld.getType() == Long.class
-				|| fld.getType() == Integer.class) {
+		} else if (fld.getType() == Long.class || fld.getType() == Integer.class) {
 			vg = new FieldInteger();
 		} else if (fld.getType().isPrimitive()) {
-			if (fld.getType() == boolean.class
-					|| fld.getType() == Boolean.class)
+			if (fld.getType() == boolean.class || fld.getType() == Boolean.class)
 				vg = new FieldCheck();
 			else
 				vg = new FieldText();
@@ -322,8 +317,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 					f.attr = juiaDetail.attr();
 				}
 				vg.newRow = true;
-				DetailGroup juiaDetailGroup = fld
-						.getAnnotation(DetailGroup.class);
+				DetailGroup juiaDetailGroup = fld.getAnnotation(DetailGroup.class);
 				if (juiaDetailGroup != null)
 					vg.newGroup = juiaDetailGroup.caption();
 				if ("<none>".equals(vg.newGroup))
@@ -334,8 +328,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		}
 
 		// Set the caption
-		vg.caption = fillWithDefaultCaption(vg.caption, juiaEdit, juiaSearch,
-				juiaBrowse, fld);
+		vg.caption = fillWithDefaultCaption(vg.caption, juiaEdit, juiaSearch, juiaBrowse, fld);
 
 		// Set the hint
 		if (vg.hint == null)
@@ -350,8 +343,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		return vg;
 	}
 
-	protected void setFieldGlobals(com.crivano.juia.control.Field f,
-			Global juiaGlobal) {
+	protected void setFieldGlobals(com.crivano.juia.control.Field f, Global juiaGlobal) {
 		if (juiaGlobal != null) {
 			f.singular = juiaGlobal.singular();
 			f.plural = juiaGlobal.plural();
@@ -360,8 +352,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		}
 	}
 
-	static public String fillWithDefaultCaption(String sActual, Edit juiaEdit,
-			Search juiaSearch, Browse juiaBrowse, Field fld) {
+	static public String fillWithDefaultCaption(String sActual, Edit juiaEdit, Search juiaSearch, Browse juiaBrowse,
+			Field fld) {
 		String s = sActual;
 		if (s == null)
 			s = "";

@@ -24,6 +24,6 @@ public @interface Global {
 	String locator() default "";
 
 	String codePrefix() default "";
-	
+
 	boolean deletable() default false;
 }

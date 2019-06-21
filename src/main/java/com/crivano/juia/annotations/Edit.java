@@ -17,8 +17,6 @@ public @interface Edit {
 
 	boolean spanAll() default false;
 
-	String mappedBy() default "";
-
 	int colXS() default 12;
 
 	int colS() default 0;
