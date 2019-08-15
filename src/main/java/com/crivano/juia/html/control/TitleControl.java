@@ -1,6 +1,7 @@
 package com.crivano.juia.html.control;
 
 import com.crivano.juia.View;
+import com.crivano.juia.annotations.Global.Gender;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
@@ -29,7 +30,11 @@ public class TitleControl {
 										if (view.getKind() == View.Kind.EditView)
 											new NoTag(this, "Edição de " + view.getSingular());
 										else if (view.getKind() == View.Kind.SearchView)
-											new NoTag(this, "Lista de " + view.getPlural());
+											new NoTag(this,
+													"Lista de " + view.getPlural()
+															+ (view.getInactivable() ? " Ativ"
+																	+ (view.getGender() == Gender.SHE ? "a" : "o") + "s"
+																	: ""));
 										else if (view.getKind() == View.Kind.ShowView) {
 											if (view.getSingular() != null)
 												new NoTag(this, "{{data.title}}");

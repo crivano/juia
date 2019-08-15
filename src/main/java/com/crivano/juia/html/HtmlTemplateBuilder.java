@@ -11,6 +11,7 @@ import com.crivano.juia.control.ButtonNew;
 import com.crivano.juia.control.ButtonSave;
 import com.crivano.juia.control.Control;
 import com.crivano.juia.control.FieldCheck;
+import com.crivano.juia.control.FieldCheckActive;
 import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.control.FieldDate;
@@ -44,7 +45,7 @@ import com.crivano.juia.html.control.TopicControl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.H2;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
-import com.webfirmframework.wffweb.tag.html.attribute.Value;
+import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -55,6 +56,7 @@ import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FieldSet;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Footer;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Header;
@@ -124,7 +126,8 @@ public class HtmlTemplateBuilder {
 					lastcol = drawGroupHeader(row, vi.newGroup, vi.attrGroup, vi.newRowGroup, vi.colXSGroup,
 							vi.colSGroup, vi.colMGroup, vi.colLGroup, vi.colXLGroup);
 			}
-			if (vi instanceof com.crivano.juia.control.Button && footer == null)
+			if ((vi instanceof com.crivano.juia.control.Button
+					|| vi instanceof com.crivano.juia.control.FieldCheckActive) && footer == null)
 				if (form != null)
 					footer = new Footer(form, new Id("footer"));
 				else
@@ -299,6 +302,14 @@ public class HtmlTemplateBuilder {
 					new NoTag(this, "Excluir");
 				}
 			};
+		} else if (control instanceof FieldCheckActive) {
+			Div div = new Div(footer, new ClassAttribute("btn btn-light"));
+			Div section = new Div(div, new ClassAttribute("xform-check xform-group"),
+					new Style("margin-left: 1.25rem"));
+			Input input = new Input(section, new Type("checkbox"), new ClassAttribute("form-check-input"),
+					new CustomAttribute("ng-model", "data.active"));
+			Label lbl = new Label(input, new ClassAttribute("form-check-label"));
+			new NoTag(lbl, control.caption);
 		} else if (control instanceof ButtonNew) {
 			new Button(footer, new ClassAttribute("btn btn-primary float-right no-print"),
 					new Style("margin-left: 1em;"), new CustomAttribute("ng-click", "create()")) {

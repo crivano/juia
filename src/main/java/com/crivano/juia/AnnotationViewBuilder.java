@@ -47,6 +47,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		if (juiaGlobal != null) {
 			view.setSingular(juiaGlobal.singular());
 			view.setPlural(juiaGlobal.plural());
+			view.setGender(juiaGlobal.gender());
+			view.setInactivable(juiaGlobal.inactivable());
 		}
 		addViewItemsForObject(view, prefix, kind, false, o.getClass());
 		if (kind == View.Kind.ShowView) {
@@ -62,7 +64,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 			addShowItems(fFrontView);
 			break;
 		case EditView:
-			addEditItems(juiaGlobal.deletable(), fFrontView);
+			addEditItems(juiaGlobal.deletable(), juiaGlobal.inactivable(), fFrontView);
 			break;
 		}
 	}

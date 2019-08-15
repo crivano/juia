@@ -17,6 +17,7 @@ public class View implements ControlContainer {
 
 	private ArrayList<Control> controls = new ArrayList<Control>();
 	private Kind kind;
+	private boolean inativable;
 
 	public Kind getKind() {
 		return kind;
@@ -56,6 +57,14 @@ public class View implements ControlContainer {
 
 	public void setControls(ArrayList<Control> controls) {
 		this.controls = controls;
+	}
+
+	public boolean getInactivable() {
+		return this.inativable;
+	}
+
+	public void setInactivable(boolean inactivable) {
+		this.inativable = inactivable;
 	}
 
 }

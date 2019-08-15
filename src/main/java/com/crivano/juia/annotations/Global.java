@@ -26,4 +26,6 @@ public @interface Global {
 	String codePrefix() default "";
 
 	boolean deletable() default false;
+
+	boolean inactivable() default false;
 }
