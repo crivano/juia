@@ -3,8 +3,8 @@ package com.crivano.juia.html.control;
 import com.crivano.juia.control.FieldFile;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;
-import com.webfirmframework.wffweb.tag.html.attribute.Accept;
 import com.webfirmframework.wffweb.tag.html.attribute.Role;
+import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Type;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
@@ -12,6 +12,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
+import com.webfirmframework.wffweb.tag.html.images.Img;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -28,8 +29,8 @@ public class FileControl {
 						new Section(this, new ClassAttribute("col col-md-4")) {
 							{
 								Button btn = new Button(this, new ClassAttribute("btn btn-success"),
-										new Style("width: 100%"), new Type("file"),
-										new CustomAttribute("ngf-select", "uploadFiles($files, $invalidFiles)")
+										new Style("width: 100%"), new Type("file"), new CustomAttribute("ngf-select",
+												"uploadFiles('" + vi.name + "', $files, $invalidFiles)")
 								// new Accept("application/pdf"),
 								// new CustomAttribute("ngf-pattern",
 								// "application/pdf"),
@@ -45,20 +46,31 @@ public class FileControl {
 						};
 						new Section(this, new ClassAttribute("col col-md-8")) {
 							{
+								new Div(this, new Id("thumbnail"), new ClassAttribute("kjh"),
+										new CustomAttribute("ng-show",
+												vi.name + " && (" + vi.name
+														+ ".originalObject.description == 'image/jpeg' || " + vi.name
+														+ ".originalObject.description == 'image/png')")) {
+									{
+										new Img(this, new Style("max-width: 10em; max-height: 10em;"), new Src(
+												"/app/core-arquivo/download/{{" + vi.name + ".originalObject.key}}")) {
+										};
+									}
+								};
 								new Div(this, new ClassAttribute("progress"), new Style("width: 100%"),
-										new CustomAttribute("ng-show", "progress >= 0")) {
+										new CustomAttribute("ng-show", vi.name + "_uploadProgress >= 0")) {
 									{
 										new Div(this, new Id("progressbar-ad"),
 												new ClassAttribute("progress-bar progress-bar-info"),
 												new Role("progressbar"),
 												new CustomAttribute("aria-valuenow", "{{progress}}"),
 												new CustomAttribute("aria-valuemin", "0"),
-												new CustomAttribute("aria-valuemax", "100"),
-												new CustomAttribute("style", "width : {{progress}}%")) {
+												new CustomAttribute("aria-valuemax", "100"), new CustomAttribute(
+														"style", "width : {{" + vi.name + "_uploadProgress}}%")) {
 											{
 												new Span(this) {
 													{
-														new NoTag(this, " {{uploadMessage}}");
+														new NoTag(this, " {{" + vi.name + "_uploadMessage}}");
 													}
 												};
 											}
