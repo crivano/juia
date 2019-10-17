@@ -7,8 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface FieldSet {
 	String caption() default "<none>";
 
-	// String show() default "";
-
 	String[] attr() default "";
 
+	boolean strong() default false;
 }

@@ -125,6 +125,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 							Control vg = container.getControls().get(nextItem);
 							if (vg.newGroup == null && juiaFieldSet != null) {
 								vg.newGroup = juiaFieldSet.caption();
+								vg.strongGroup = juiaFieldSet.strong();
 								vg.attrGroup = juiaFieldSet.attr();
 							}
 						}
@@ -140,6 +141,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 					FieldSet juiaFieldSet = fld.getAnnotation(FieldSet.class);
 					if (juiaFieldSet != null) {
 						repeat.newGroup = juiaFieldSet.caption();
+						repeat.strongGroup = juiaFieldSet.strong();
 						repeat.attrGroup = juiaFieldSet.attr();
 					}
 					container.getControls().add(repeat);
@@ -149,8 +151,10 @@ public class AnnotationViewBuilder extends ViewBuilder {
 						repeat.setSingular(juiaGlobal.singular());
 						repeat.setPlural(juiaGlobal.plural());
 						repeat.setGender(juiaGlobal.gender());
-						if (repeat.newGroup == null)
+						if (repeat.newGroup == null) {
 							repeat.newGroup = juiaGlobal.plural();
+							repeat.strongGroup = juiaFieldSet.strong();
+						}
 					}
 					int nextItem = container.getControls().size();
 					addViewItemsForObject(repeat, fld.getName() + "Item.", kind, detail, clazzList);
@@ -273,6 +277,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 			vg.newRow = juiaEdit.newRow();
 			if (juiaFieldSet != null) {
 				vg.newGroup = juiaFieldSet.caption();
+				vg.strongGroup = juiaFieldSet.strong();
 				vg.attrGroup = juiaFieldSet.attr();
 			}
 			if ("<none>".equals(vg.newGroup))

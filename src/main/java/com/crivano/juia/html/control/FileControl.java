@@ -23,12 +23,25 @@ public class FileControl {
 		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
 				Utils.label(this, vi);
-
 				Div divUpload = new Div(this, new ClassAttribute("row")) {
 					{
-						new Section(this, new ClassAttribute("col col-md-4")) {
+						new Section(this, new ClassAttribute("col col-sm-auto align-self-center"),
+								new CustomAttribute("ng-show",
+										vi.name + " && (" + vi.name + ".originalObject.description == 'image/jpeg' || "
+												+ vi.name + ".originalObject.description == 'image/png')")) {
 							{
-								Button btn = new Button(this, new ClassAttribute("btn btn-success"),
+								new Div(this, new Id("thumbnail"), new ClassAttribute("kjh")) {
+									{
+										new Img(this, new Style("max-width: 10em; max-height: 10em;"), new Src(
+												"/app/core-arquivo/download/{{" + vi.name + ".originalObject.key}}")) {
+										};
+									}
+								};
+							}
+						};
+						new Section(this, new ClassAttribute("col col-sm-auto align-self-center")) {
+							{
+								Button btn = new Button(this, new ClassAttribute("btn btn-info"),
 										new Style("width: 100%"), new Type("file"), new CustomAttribute("ngf-select",
 												"uploadFiles('" + vi.name + "', $files, $invalidFiles)")
 								// new Accept("application/pdf"),
@@ -44,20 +57,9 @@ public class FileControl {
 								HtmlTemplateBuilder.addAttr(vi.attr, btn);
 							}
 						};
-						new Section(this, new ClassAttribute("col col-md-8")) {
+						new Section(this, new ClassAttribute("col align-self-center")) {
 							{
-								new Div(this, new Id("thumbnail"), new ClassAttribute("kjh"),
-										new CustomAttribute("ng-show",
-												vi.name + " && (" + vi.name
-														+ ".originalObject.description == 'image/jpeg' || " + vi.name
-														+ ".originalObject.description == 'image/png')")) {
-									{
-										new Img(this, new Style("max-width: 10em; max-height: 10em;"), new Src(
-												"/app/core-arquivo/download/{{" + vi.name + ".originalObject.key}}")) {
-										};
-									}
-								};
-								new Div(this, new ClassAttribute("progress"), new Style("width: 100%"),
+								new Div(this, new ClassAttribute("progress"), new Style("width: 100%;"),
 										new CustomAttribute("ng-show", vi.name + "_uploadProgress >= 0")) {
 									{
 										new Div(this, new Id("progressbar-ad"),

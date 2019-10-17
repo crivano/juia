@@ -4,6 +4,7 @@ public class Control {
 	public boolean newRow;
 
 	public String newGroup;
+	public boolean strongGroup;
 	public boolean newRowGroup;
 	public String[] attrGroup;
 	public int colXSGroup;

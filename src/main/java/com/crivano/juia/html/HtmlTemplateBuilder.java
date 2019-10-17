@@ -154,7 +154,8 @@ public class HtmlTemplateBuilder {
 			if (s == null && vi instanceof Repeat)
 				s = ((Repeat) vi).getPlural();
 			final String caption = s;
-			Header header = new Header(fieldSet, new ClassAttribute("juia form-group"));
+			Header header = new Header(fieldSet,
+					new ClassAttribute("form-group " + (vi.strongGroup ? "juia-strong" : "juia")));
 			Div hr = new Div(header, new ClassAttribute("row align-items-center"));
 			Div hc = new Div(hr, new ClassAttribute("col col-auto"));
 			NoTag noTag = new NoTag(hc, caption);
