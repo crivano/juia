@@ -271,7 +271,7 @@ public class HtmlTemplateBuilder {
 			new CustomTag("dir-pagination-controls", columnPag, new CustomAttribute("max-size", "9"),
 					new CustomAttribute("direction-links", "true"), new CustomAttribute("boundary-links", "true"));
 			Div column = new Div(row, new ClassAttribute("col col-sm-12"));
-			Table table = new Table(column, new ClassAttribute("table table-striped table-sm"));
+			Table table = new Table(column, new ClassAttribute("table table-striped table-sm table-hover"));
 			THead thead = new THead(table);
 			Tr trh = new Tr(thead);
 			for (int j = i; j < container.getControls().size(); j++) {

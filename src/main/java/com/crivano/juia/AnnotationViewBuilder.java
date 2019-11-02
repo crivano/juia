@@ -153,7 +153,6 @@ public class AnnotationViewBuilder extends ViewBuilder {
 						repeat.setGender(juiaGlobal.gender());
 						if (repeat.newGroup == null) {
 							repeat.newGroup = juiaGlobal.plural();
-							repeat.strongGroup = juiaFieldSet.strong();
 						}
 					}
 					int nextItem = container.getControls().size();

@@ -28,7 +28,8 @@ public class DateBoxControl {
 
 						Input input = new Input(this, new Type("text"), new ClassAttribute("form-control"),
 								new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name),
-								new Name(vi.fld.getName()), new CustomAttribute("mask", "2999-19-39"));
+								new Name(vi.fld.getName()), new CustomAttribute("mask", "2999-19-39"),
+								new CustomAttribute("autocomplete", "off"));
 						if (vi.fld.isAnnotationPresent(NotNull.class))
 							input.addAttributes(new CustomAttribute("ng-required", "true"));
 						HtmlTemplateBuilder.addAttr(vi.attr, input);
