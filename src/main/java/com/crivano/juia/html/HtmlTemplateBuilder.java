@@ -103,7 +103,7 @@ public class HtmlTemplateBuilder {
 
 		if (kind == View.Kind.EditView) {
 			form = new Form(divWrapper, new Id("form"), new Name(o.getClass().getSimpleName()),
-					new ClassAttribute("juia-form"));
+					new ClassAttribute("juia-form"), new CustomAttribute("novalidate", "novalidate"));
 		} else if (kind == View.Kind.SearchView) {
 			row = new Div(divWrapper, new ClassAttribute("row", "juia", "main-search-row"));
 		} else if (kind == View.Kind.ShowView) {
