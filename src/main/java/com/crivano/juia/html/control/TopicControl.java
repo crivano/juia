@@ -12,7 +12,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class TopicControl {
-	public static void render(Div parent, ClassAttribute col, final Topic vi) {
+	public static void render(Div parent, String col, final Topic vi) {
 		String name = vi.name + ("Ref".equals(vi.fld.getType().getSimpleName()) ? ".title" : "");
 		String value = name;
 		if (vi.value != null && vi.value.trim().length() > 0) {

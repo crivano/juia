@@ -19,8 +19,8 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class FileControl {
 
-	public static void render(Div parent, ClassAttribute col, final FieldFile vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldFile vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				Utils.label(this, vi);
 				Div divUpload = new Div(this, new ClassAttribute("row")) {

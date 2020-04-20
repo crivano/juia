@@ -17,8 +17,8 @@ import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class NumericControl {
-	public static void render(Div parent, ClassAttribute col, final FieldNumeric vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldNumeric vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				Input input = new Input(Utils.label(this, vi), new Type("text"), new ClassAttribute("form-control"),
 						new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name), new Name(vi.fld.getName()));

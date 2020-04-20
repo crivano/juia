@@ -165,12 +165,12 @@ public class HtmlTemplateBuilder {
 
 	static protected int renderControl(final Control control, int i, final String prefix,
 			final ControlContainer container, FieldSet fieldSet, Div row, Div lastcol, AbstractHtml footer) {
-		ClassAttribute col = null;
+		String col = null;
 		if (control instanceof com.crivano.juia.control.Field) {
 			com.crivano.juia.control.Field f = (com.crivano.juia.control.Field) control;
-			col = new ClassAttribute("col" + (f.colXS != 0 ? " col-" + f.colXS : "")
-					+ (f.colS != 0 ? " col-sm-" + f.colS : "") + (f.colM != 0 ? " col-md-" + f.colM : "")
-					+ (f.colL != 0 ? " col-lg-" + f.colL : "") + (f.colXL != 0 ? " col-xl-" + f.colXL : ""));
+			col = "col" + (f.colXS != 0 ? " col-" + f.colXS : "") + (f.colS != 0 ? " col-sm-" + f.colS : "")
+					+ (f.colM != 0 ? " col-md-" + f.colM : "") + (f.colL != 0 ? " col-lg-" + f.colL : "")
+					+ (f.colXL != 0 ? " col-xl-" + f.colXL : "");
 		}
 
 		if (control instanceof Repeat) {

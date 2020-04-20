@@ -13,8 +13,8 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class CheckBoxControl {
-	public static void render(Div parent, ClassAttribute col, final FieldCheck vi) {
-		Div div = new Div(parent, col) {
+	public static void render(Div parent, String col, final FieldCheck vi) {
+		Div div = new Div(parent, new ClassAttribute(col)) {
 			{
 				Section section = new Section(this, new ClassAttribute("form-check form-group")) {
 					{

@@ -17,24 +17,19 @@ import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class IntegerControl {
-	public static void render(Div parent, ClassAttribute col,
-			final FieldInteger vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldInteger vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				Utils.label(this, vi);
 
-				new Label(this, new CustomAttribute("for", vi.fld.getName()),
-						new Title(vi.hint), new ClassAttribute("input")) {
+				new Label(this, new CustomAttribute("for", vi.fld.getName()), new Title(vi.hint),
+						new ClassAttribute("input")) {
 					{
-						Input input = new Input(this, new Type("text"),
-								new ClassAttribute("form-control"), new Id(
-										vi.fld.getName()), new CustomAttribute(
-										"ng-model", vi.name), new Name(
-										vi.fld.getName()), new CustomAttribute(
-										"ui-number-mask", "0"));
+						Input input = new Input(this, new Type("text"), new ClassAttribute("form-control"),
+								new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name),
+								new Name(vi.fld.getName()), new CustomAttribute("ui-number-mask", "0"));
 						if (vi.fld.isAnnotationPresent(NotNull.class))
-							input.addAttributes(new CustomAttribute(
-									"ng-required", "true"));
+							input.addAttributes(new CustomAttribute("ng-required", "true"));
 						HtmlTemplateBuilder.addAttr(vi.attr, input);
 					}
 				};

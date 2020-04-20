@@ -19,8 +19,8 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
 public class DateBoxControl {
-	public static void render(Div parent, ClassAttribute col, final FieldDate vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldDate vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				new CustomTag("datepicker", Utils.label(this, vi), new CustomAttribute("date-format", "yyyy-MM-dd"),
 						new CustomAttribute("selector", "form-control"), new CustomAttribute("date-refocus", "true")) {

@@ -20,8 +20,8 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class CompleteBoxControl {
 
-	public static void render(Div parent, ClassAttribute col, final FieldComplete vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldComplete vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			protected String dadosDoModelo(final FieldComplete vi) {
 				boolean f = false;
 				for (Annotation a : vi.fld.getAnnotations()) {

@@ -20,8 +20,8 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class SelectControl {
-	public static void render(Div parent, ClassAttribute col, final FieldCombo vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldCombo vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				Select select = new Select(Utils.label(this, vi), new CustomAttribute("ng-model", vi.name),
 						new ClassAttribute("form-control")) {

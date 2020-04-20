@@ -19,8 +19,8 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class MoneyBoxControl {
 
-	public static void render(Div parent, ClassAttribute col, final FieldMoney vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldMoney vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				new I(Utils.label(this, vi), new ClassAttribute("icon-append fa fa-dollar"));
 				Input input = new Input(this, new Type("text"), new Id(vi.fld.getName()),

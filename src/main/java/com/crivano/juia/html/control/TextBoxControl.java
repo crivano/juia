@@ -22,8 +22,8 @@ import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
 public class TextBoxControl {
-	public static void render(Div parent, ClassAttribute col, final FieldText vi) {
-		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
+	public static void render(Div parent, String col, final FieldText vi) {
+		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
 				Label lbl = Utils.label(this, vi);
 				AbstractHtml input;
