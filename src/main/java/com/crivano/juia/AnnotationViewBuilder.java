@@ -1,5 +1,6 @@
 package com.crivano.juia;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,6 +29,7 @@ import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.control.FieldDate;
 import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.FieldHidden;
 import com.crivano.juia.control.FieldInteger;
 import com.crivano.juia.control.FieldMoney;
 import com.crivano.juia.control.FieldMultipleSelect;
@@ -115,7 +117,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				// Embedded object
 				//
 				if (kind == View.Kind.EditView && juiaEdit != null) {
-					if (!fld.getType().isEnum() && fld.getType().isAnnotationPresent(Global.class)) {
+					if (!isManyToOne(fld) && !fld.getType().isEnum()
+							&& fld.getType().isAnnotationPresent(Global.class)) {
 						int nextItem = container.getControls().size();
 						addViewItemsForObject(container, prefix + fld.getName() + ".", kind, detail, fld.getType());
 
@@ -167,6 +170,17 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		}
 	}
 
+	private boolean isManyToOne(Field fld) {
+		boolean manyToOne = false;
+		//System.out.println("*** " + fld.getName());
+		for (Annotation a : fld.getDeclaredAnnotations()) {
+			//System.out.println(a.annotationType().getSimpleName());
+			if (a.annotationType().getSimpleName().equals("ManyToOne"))
+				manyToOne = true;
+		}
+		return manyToOne;
+	}
+
 	protected static List<Class> getClassHierarchy(Class baseClass) {
 		List<Class> classes = new ArrayList<Class>();
 		for (Class clazz = baseClass; clazz != Object.class; clazz = clazz.getSuperclass()) {
@@ -195,8 +209,10 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				throw new RuntimeException("can't load @GlobalClass: " + juiaGlobalClass.value(), e);
 			}
 		} else {
+			juiaGlobal = fld.getType().getAnnotation(Global.class);
+
 			Type type = fld.getGenericType();
-			if (type instanceof ParameterizedType) {
+			if (juiaGlobal == null && type instanceof ParameterizedType) {
 				ParameterizedType pType = (ParameterizedType) type;
 				Type arg0 = pType.getActualTypeArguments()[0];
 				if (arg0 instanceof Class)
@@ -211,9 +227,11 @@ public class AnnotationViewBuilder extends ViewBuilder {
 				vg = new Topic();
 			else
 				vg = new Topic();
+		} else if (isAnnotatedWithId(fld)) {
+			vg = new FieldHidden();
 		} else if (juiaEdit != null && juiaEdit.kind() == EditKindEnum.FILE) {
 			vg = new FieldFile();
-		} else if ("Ref".equals(fld.getType().getSimpleName())) {
+		} else if ("Ref".equals(fld.getType().getSimpleName()) || isManyToOne(fld)) {
 			if (juiaEdit != null && juiaEdit.kind() == EditKindEnum.SELECT)
 				vg = new FieldRefSelect(juiaEdit.init(), juiaEdit.options());
 			else
@@ -386,4 +404,12 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		return s;
 	}
 
+	public static boolean isAnnotatedWithId(Field fld) {
+		for (Annotation a : fld.getAnnotations()) {
+			if (a.annotationType().getSimpleName().equals("Id")) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

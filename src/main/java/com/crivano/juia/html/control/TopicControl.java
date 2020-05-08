@@ -21,7 +21,7 @@ public class TopicControl {
 			value = s;
 		}
 
-		P p = new P(parent, new CustomAttribute("ng-show", name));
+		P p = new P(parent, new CustomAttribute("v-if", name));
 		new Span(p, new ClassAttribute("topic-caption")) {
 			{
 				new NoTag(this, vi.caption);
@@ -42,6 +42,7 @@ public class TopicControl {
 			sb.append("'-' }}");
 			new NoTag(p, sb.toString());
 		} else
-			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
+			new NoTag(p, "{{" + value + "||''}}");
+//		new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
 	}
 }

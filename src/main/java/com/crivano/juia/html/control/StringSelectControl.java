@@ -14,25 +14,21 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Option;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Select;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class StringSelectControl {
 	public static void render(Div parent, String col, final FieldSelect vi) {
 		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
-				Select select = new Select(Utils.label(this, vi), new ClassAttribute("form-control"),
-						new CustomAttribute("ng-model", vi.name), new CustomAttribute("ng-init", vi.getInit()),
-						new CustomAttribute("ng-options", vi.getOptions()));
+				CustomTag select = new CustomTag("juia-string-select", Utils.label(this, vi),
+						new ClassAttribute("form-control"), new CustomAttribute(":value", vi.name),
+						new CustomAttribute("@input", vi.name + " = $event.target.value; proxify()"),
+						new CustomAttribute(":options", vi.getOptions()),
+						new CustomAttribute("gender", vi.gender != null ? vi.gender.name() : ""));
 				HtmlTemplateBuilder.addAttr(vi.attr, select);
-				new I(this);
-				Option option = new Option(select, new Value(""));
-				if (vi.gender == Gender.SHE)
-					new NoTag(option, "[Nenhuma]");
-				else
-					new NoTag(option, "[Nenhum]");
-
 				if (vi.fld.isAnnotationPresent(NotNull.class))
-					select.addAttributes(new CustomAttribute("ng-required", "true"));
+					select.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, select);
 			}
 		};

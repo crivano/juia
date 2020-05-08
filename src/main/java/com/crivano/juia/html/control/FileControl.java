@@ -26,7 +26,7 @@ public class FileControl {
 				Div divUpload = new Div(this, new ClassAttribute("row")) {
 					{
 						new Section(this, new ClassAttribute("col col-sm-auto align-self-center"),
-								new CustomAttribute("ng-show",
+								new CustomAttribute("v-if",
 										vi.name + " && (" + vi.name + ".originalObject.description == 'image/jpeg' || "
 												+ vi.name + ".originalObject.description == 'image/png')")) {
 							{
@@ -60,7 +60,7 @@ public class FileControl {
 						new Section(this, new ClassAttribute("col align-self-center")) {
 							{
 								new Div(this, new ClassAttribute("progress"), new Style("width: 100%;"),
-										new CustomAttribute("ng-show", vi.name + "_uploadProgress >= 0")) {
+										new CustomAttribute("v-if", vi.name + "_uploadProgress >= 0")) {
 									{
 										new Div(this, new Id("progressbar-ad"),
 												new ClassAttribute("progress-bar progress-bar-info"),

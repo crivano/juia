@@ -56,7 +56,7 @@ public class TitleControl {
 												}
 											};
 											new Input(this, new Id("filter"), new Name("filter"),
-													new CustomAttribute("ng-model", "filter"),
+													new CustomAttribute("v-model", "filter"),
 													new ClassAttribute("form-control"), new Type("text"));
 
 										}

@@ -16,19 +16,21 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
 public class MoneyBoxControl {
 
 	public static void render(Div parent, String col, final FieldMoney vi) {
 		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
-				new I(Utils.label(this, vi), new ClassAttribute("icon-append fa fa-dollar"));
-				Input input = new Input(this, new Type("text"), new Id(vi.fld.getName()),
-						new CustomAttribute("ng-model", vi.name), new CustomAttribute("ui-money-mask", "2"),
-						new Name(vi.fld.getName()), new ClassAttribute("form-control isMoney"));
+				CustomTag tag = new CustomTag("juia-money", Utils.label(this, vi), new Id(vi.fld.getName()),
+						new CustomAttribute(":value", vi.name),
+						new CustomAttribute("@input",
+								vi.name + " = $event.target.value; proxify()"),
+						new Name(vi.fld.getName()), new CustomAttribute("autocomplete", "off"));
 				if (vi.fld.isAnnotationPresent(NotNull.class))
-					input.addAttributes(new CustomAttribute("ng-required", "true"));
-				HtmlTemplateBuilder.addAttr(vi.attr, input);
+					tag.addAttributes(new CustomAttribute("required", "true"));
+				HtmlTemplateBuilder.addAttr(vi.attr, tag);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

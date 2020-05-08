@@ -28,4 +28,6 @@ public @interface Global {
 	boolean deletable() default false;
 
 	boolean inactivable() default false;
+
+	String sortField() default "";
 }

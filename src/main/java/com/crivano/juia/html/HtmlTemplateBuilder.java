@@ -16,6 +16,7 @@ import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.control.FieldComplete;
 import com.crivano.juia.control.FieldDate;
 import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.FieldHidden;
 import com.crivano.juia.control.FieldInteger;
 import com.crivano.juia.control.FieldMoney;
 import com.crivano.juia.control.FieldMultipleSelect;
@@ -27,11 +28,11 @@ import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
-import com.crivano.juia.html.control.ButtonControl;
 import com.crivano.juia.html.control.CheckBoxControl;
 import com.crivano.juia.html.control.CompleteBoxControl;
 import com.crivano.juia.html.control.DateBoxControl;
 import com.crivano.juia.html.control.FileControl;
+import com.crivano.juia.html.control.HiddenControl;
 import com.crivano.juia.html.control.IntegerControl;
 import com.crivano.juia.html.control.MoneyBoxControl;
 import com.crivano.juia.html.control.MultipleSelectControl;
@@ -83,7 +84,7 @@ public class HtmlTemplateBuilder {
 //		Div divBusy = new Div(null, new CustomAttribute("cg-busy",
 //				"{promise:promise,message:'Por favor, aguarde...',templateUrl:'/resources/busy.html'}"));
 
-		Div divWrapper = new Div(null);
+		Div divWrapper = new Div(null, kind == View.Kind.SearchView ? new CustomAttribute("v-if", "list") : new CustomAttribute("v-if", "data"));
 
 		// Breadcrumbs
 		if ((kind == View.Kind.EditView && view.getSingular() != null)
@@ -175,45 +176,42 @@ public class HtmlTemplateBuilder {
 
 		if (control instanceof Repeat) {
 			final Repeat repeat = (Repeat) control;
-			row.addAttributes(new CustomAttribute("ng-repeat", repeat.fldName + "Item in " + repeat.name));
+			row.addAttributes(new CustomAttribute("v-for", "(" + repeat.fldName + "Item, $index)  in " + repeat.name),
+					new CustomAttribute(":key", repeat.fldName + "Item.id"));
 
 			Div hc = new Div(fieldSet.getChildren().get(0).getChildren().get(0),
 					new ClassAttribute("col col-auto ml-auto"));
 
 			Button btnPlus = new Button(hc, new ClassAttribute("juia btn btn-sm btn-secondary"),
-					new Style("margin-left: 1em;"), new CustomAttribute("ng-click",
-							repeat.name + " = (" + repeat.name + " || []);" + repeat.name + ".push({});"));
-
-			new I(btnPlus, new ClassAttribute("fa fa-plus"));
-			new NoTag(btnPlus, "&nbsp;");
-			new NoTag(btnPlus, repeat.getSingular());
+					new Style("margin-left: 1em;"), new CustomAttribute("@click.prevent",
+							repeat.name + " = (" + repeat.name + " || []);" + repeat.name + ".push({}); proxify();"));
+			new NoTag(btnPlus, "&plus;&nbsp;" + repeat.getSingular());
 
 			Div colToSidebar = new Div(row, new ClassAttribute("col col-auto"));
 			Section section = new Section(colToSidebar);
 			Label label = Utils.label(section, null);
 			Label label2 = new Label(section, new ClassAttribute("input float-right"));
-			Div btnGrp = new Div(label2, new ClassAttribute("btn-group"), new CustomAttribute("role", "group"));
 
-			Div btnDrop = new Div(btnGrp, new ClassAttribute("btn-group dropright"),
-					new CustomAttribute("role", "group"));
+			CustomTag btnGrp = new CustomTag("b-dropdown", label2, new CustomAttribute(":text", "''+($index+1)"),
+					new CustomAttribute("dropright"));
 
-			Button drop = new Button(btnDrop, new Id("dropBtn"),
-					new ClassAttribute("btn btn-secondary dropdown-toggle"),
-					new CustomAttribute("data-toggle", "dropdown"), new CustomAttribute("aria-haspopup", "true"),
-					new CustomAttribute("aria-expanded", "false"));
-			new NoTag(drop, "{{$index+1}}");
-			Div divDrop = new Div(btnDrop, new ClassAttribute("dropdown-menu pt-0 pb-0"),
-					new CustomAttribute("aria-labelledby", "dropBtn"));
-			ButtonControl.render(divDrop, new ClassAttribute(""), "fa fa-trash", null, repeat.name,
-					repeat.name + ".splice($index, 1);", null, "btn btn-link");
-			ButtonControl.render(
-					divDrop, new ClassAttribute(""), "fa fa-arrow-up", null, repeat.name, repeat.name + "[$index] = "
-							+ repeat.name + ".splice($index - 1, 1, " + repeat.name + "[$index])[0]",
-					"$index === 0", "btn btn-link");
-			ButtonControl.render(
-					divDrop, new ClassAttribute(""), "fa fa-arrow-down", null, repeat.name, repeat.name + "[$index] = "
-							+ repeat.name + ".splice($index + 1, 1, " + repeat.name + "[$index])[0]",
-					"$index === " + repeat.name + ".length - 1", "btn btn-link");
+			CustomTag btnUp = new CustomTag("b-dropdown-item", btnGrp, // new CustomAttribute("text", "fa fa-arrow-up"),
+					new CustomAttribute("@click.prevent", repeat.name + "[$index] = " + repeat.name
+							+ ".splice($index - 1, 1, " + repeat.name + "[$index])[0]; proxifyAll()"),
+					new CustomAttribute(":disabled", "$index === 0"));
+			new NoTag(btnUp, "Subir");
+
+			CustomTag btnDown = new CustomTag("b-dropdown-item", btnGrp,
+					// new CustomAttribute("text", "fa fa-arrow-down"),
+					new CustomAttribute("@click.prevent",
+							repeat.name + "[$index] = " + repeat.name + ".splice($index + 1, 1, " + repeat.name
+									+ "[$index])[0]; proxifyAll()"),
+					new CustomAttribute(":disabled", "$index === " + repeat.name + ".length - 1"));
+			new NoTag(btnDown, "Descer");
+
+			CustomTag btnDel = new CustomTag("b-dropdown-item", btnGrp, // new CustomAttribute("text", "fa fa-trash"),
+					new CustomAttribute("@click.prevent", repeat.name + ".splice($index, 1); proxifyAll()"));
+			new NoTag(btnDel, "Excluir");
 
 			Div colToControls = new Div(row, new ClassAttribute("col"));
 			Div rowToControls = new Div(colToControls, new ClassAttribute("row"));
@@ -249,6 +247,8 @@ public class HtmlTemplateBuilder {
 			FileControl.render(row, col, (FieldFile) control);
 		} else if (control instanceof FieldText) {
 			TextBoxControl.render(row, col, (FieldText) control);
+		} else if (control instanceof FieldHidden) {
+			HiddenControl.render(row, col, (FieldHidden) control);
 		} else if (control instanceof FieldInteger) {
 			IntegerControl.render(row, col, (FieldInteger) control);
 		} else if (control instanceof FieldNumeric) {
@@ -284,8 +284,8 @@ public class HtmlTemplateBuilder {
 			TBody tbody = new TBody(table);
 			Tr trb = new Tr(tbody,
 					new CustomAttribute("dir-paginate", "data in list | filter: filter | itemsPerPage:20"),
-					tableColumn.skipShow ? new CustomAttribute("ng-click", "edit(data.key)")
-							: new CustomAttribute("ng-click", "show(data.key)"));
+					tableColumn.skipShow ? new CustomAttribute("@click.prevent", "edit(data)")
+							: new CustomAttribute("@click.prevent", "click(data)"));
 			for (int j = i; j < container.getControls().size(); j++) {
 				final Control vitc = container.getControls().get(j);
 				if (!(vitc instanceof TableColumn))
@@ -298,7 +298,7 @@ public class HtmlTemplateBuilder {
 			return i;
 		} else if (control instanceof ButtonDelete) {
 			new Button(footer, new ClassAttribute("btn btn-danger no-print"),
-					new CustomAttribute("ng-click", "remove()"), new CustomAttribute("ng-show", "data.id||false")) {
+					new CustomAttribute("@click.prevent", "remove()"), new CustomAttribute("v-if", "data.id||false")) {
 				{
 					new NoTag(this, "Excluir");
 				}
@@ -308,19 +308,19 @@ public class HtmlTemplateBuilder {
 			Div section = new Div(div, new ClassAttribute("xform-check xform-group"),
 					new Style("margin-left: 1.25rem"));
 			Input input = new Input(section, new Type("checkbox"), new ClassAttribute("form-check-input"),
-					new CustomAttribute("ng-model", "data.active"));
+					new CustomAttribute("v-model", "data.active"));
 			Label lbl = new Label(input, new ClassAttribute("form-check-label"));
 			new NoTag(lbl, control.caption);
 		} else if (control instanceof ButtonNew) {
 			new Button(footer, new ClassAttribute("btn btn-primary float-right no-print"),
-					new Style("margin-left: 1em;"), new CustomAttribute("ng-click", "create()")) {
+					new Style("margin-left: 1em;"), new CustomAttribute("@click.prevent", "create()")) {
 				{
 					new NoTag(this, "Criar");// + container.getSingular());
 				}
 			};
 		} else if (control instanceof ButtonSave) {
 			new Button(footer, new ClassAttribute("btn btn-primary float-right no-print"),
-					new Style("margin-left: 1em;"), new CustomAttribute("ng-click", "save()"),
+					new Style("margin-left: 1em;"), new CustomAttribute("@click.prevent", "save()"),
 					new CustomAttribute("formnovalidate")) {
 				{
 					new NoTag(this, "Salvar");
@@ -328,7 +328,7 @@ public class HtmlTemplateBuilder {
 			};
 		} else if (control instanceof ButtonCancel) {
 			new Button(footer, new ClassAttribute("btn btn-light float-right no-print"), new Style("margin-left: 1em;"),
-					new CustomAttribute("ng-click", "cancel()")) {
+					new CustomAttribute("@click.prevent", "cancel()")) {
 				{
 					new NoTag(this, "Cancelar");
 				}
@@ -402,5 +402,4 @@ public class HtmlTemplateBuilder {
 
 		return col;
 	}
-
 }

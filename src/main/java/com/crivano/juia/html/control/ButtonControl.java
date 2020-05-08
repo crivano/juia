@@ -18,8 +18,8 @@ public class ButtonControl {
 //
 //		Label label2 = new Label(section, new ClassAttribute("input float-right"));
 
-		new Button(parent, new ClassAttribute(clazz), new CustomAttribute("ng-click", click),
-				new CustomAttribute("ng-disabled", disabled)) {
+		new Button(parent, new ClassAttribute(clazz), new CustomAttribute("@click.prevent", click),
+				new CustomAttribute("disabled", disabled)) {
 			{
 				if (icon != null)
 					new I(this, new ClassAttribute("fa fa-" + icon));
