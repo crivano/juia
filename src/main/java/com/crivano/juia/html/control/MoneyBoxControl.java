@@ -26,7 +26,7 @@ public class MoneyBoxControl {
 				CustomTag tag = new CustomTag("juia-money", Utils.label(this, vi), new Id(vi.fld.getName()),
 						new CustomAttribute(":value", vi.name),
 						new CustomAttribute("@input",
-								vi.name + " = $event.target.value; proxify()"),
+								vi.name + " = $event; proxify()"),
 						new Name(vi.fld.getName()), new CustomAttribute("autocomplete", "off"));
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					tag.addAttributes(new CustomAttribute("required", "true"));
