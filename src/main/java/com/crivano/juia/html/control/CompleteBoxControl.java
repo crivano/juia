@@ -38,15 +38,15 @@ public class CompleteBoxControl {
 	}
 
 	public static void render(Div parent, String col, final FieldComplete vi) {
-		List<Field> flds = com.crivano.juia.util.Utils.getSearchFields(vi.fld.getType());
+		List<Field> flds = com.crivano.juia.util.JuiaUtils.getSearchFields(vi.fld.getType());
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		for (final Field fld : flds) {
 			String title = null;
 			if (fld.getAnnotation(Search.class) != null)
-				title = com.crivano.juia.util.Utils.sorn(fld.getAnnotation(Search.class).caption());
+				title = com.crivano.juia.util.JuiaUtils.sorn(fld.getAnnotation(Search.class).caption());
 			if (title == null && fld.getAnnotation(Edit.class) != null)
-				title = com.crivano.juia.util.Utils.sorn(fld.getAnnotation(Edit.class).caption());
+				title = com.crivano.juia.util.JuiaUtils.sorn(fld.getAnnotation(Edit.class).caption());
 			if (title == null)
 				title = fld.getName();
 			sb.append("{title:'");

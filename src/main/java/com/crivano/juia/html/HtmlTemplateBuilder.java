@@ -284,7 +284,7 @@ public class HtmlTemplateBuilder {
 			TBody tbody = new TBody(table);
 			Tr trb = new Tr(tbody,
 					new CustomAttribute("dir-paginate", "data in list | filter: filter | itemsPerPage:20"),
-					tableColumn.skipShow ? new CustomAttribute("@click.prevent", "edit(data)")
+					tableColumn.skipShow ? new CustomAttribute("@click.prevent", "click(data)")
 							: new CustomAttribute("@click.prevent", "click(data)"));
 			for (int j = i; j < container.getControls().size(); j++) {
 				final Control vitc = container.getControls().get(j);
