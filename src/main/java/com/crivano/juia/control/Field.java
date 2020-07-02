@@ -1,6 +1,9 @@
 package com.crivano.juia.control;
 
+import javax.validation.constraints.NotNull;
+
 import com.crivano.juia.annotations.Global.Gender;
+import com.crivano.juia.annotations.Required;
 
 public abstract class Field extends Control {
 	public java.lang.reflect.Field fld;
@@ -27,5 +30,9 @@ public abstract class Field extends Control {
 	@Override
 	public String toString() {
 		return "{\"control\":\"Field\",\"locator\":\"" + this.locator + "\",\"singular\":\"" + this.singular + "\"}";
+	}
+
+	public boolean isRequired() {
+		return fld.isAnnotationPresent(NotNull.class) || fld.isAnnotationPresent(Required.class);
 	}
 }

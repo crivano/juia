@@ -24,19 +24,20 @@ public class SelectControl {
 				sb.append(v.getCode());
 				sb.append("',value:'");
 				sb.append(v.getDescr());
-				sb.append("'},"); 
+				sb.append("'},");
 			}
 		}
 		sb.append("]");
 
 		Section section = new Section(parent, new ClassAttribute(col + " form-group")) {
 			{
-				CustomTag tag = new CustomTag("juia-select", Utils.label(this, vi), new Id(vi.fld.getName()),
+				Utils.label(this, vi);
+				CustomTag tag = new CustomTag("juia-select", this, new Id(vi.fld.getName()),
 						new CustomAttribute(":value", vi.name),
-						new CustomAttribute("@input",
-								vi.name + " = $event.target.value; proxify()"),
+						new CustomAttribute("@input", vi.name + " = $event.target.value; proxify()"),
+						new CustomAttribute("@change", vi.name + " = $event.target.value; proxify()"),
 						new Name(vi.fld.getName()), new CustomAttribute(":list", sb.toString()));
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					tag.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, tag);
 			}

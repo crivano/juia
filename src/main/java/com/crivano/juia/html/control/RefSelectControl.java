@@ -34,7 +34,7 @@ public class RefSelectControl {
 				else
 					new NoTag(option, "[Nenhum]");
 
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					select.addAttributes(new CustomAttribute("ng-required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, select);
 			}

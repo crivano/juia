@@ -27,7 +27,7 @@ public class StringSelectControl {
 						new CustomAttribute(":options", vi.getOptions()),
 						new CustomAttribute("gender", vi.gender != null ? vi.gender.name() : ""));
 				HtmlTemplateBuilder.addAttr(vi.attr, select);
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					select.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, select);
 			}

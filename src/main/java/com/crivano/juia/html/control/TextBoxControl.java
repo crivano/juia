@@ -30,7 +30,7 @@ public class TextBoxControl {
 //										+ "', $event)"),
 						new CustomAttribute("@input", vi.name + " = $event.target.value; proxify()"),
 						new Name(vi.fld.getName()), new CustomAttribute("autocomplete", "off"));
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					tag.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, tag);
 			}

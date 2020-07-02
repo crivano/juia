@@ -19,10 +19,10 @@ public class DateBoxControl {
 			{
 				CustomTag input = new CustomTag("juia-date", Utils.label(this, vi), new Id(vi.fld.getName()),
 						new CustomAttribute(":value", vi.name),
-						new CustomAttribute("@input", vi.name + " = $event.target.value; proxify()"),
-						new Name(vi.fld.getName()), new CustomAttribute("autocomplete", "off"));
+						new CustomAttribute("@input", vi.name + " = $event; proxify()"), new Name(vi.fld.getName()),
+						new CustomAttribute("autocomplete", "off"));
 
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					input.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, input);
 			}

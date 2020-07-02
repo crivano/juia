@@ -71,7 +71,7 @@ public class CompleteBoxControl {
 //						new CustomAttribute("text-no-results", "Não encontrei nenhum"
 //								+ (vi.gender == Gender.SHE ? "a" : "") + " " + vi.singular + "."),
 						new CustomAttribute(":tb-columns", sb.toString()));
-				if (vi.fld.isAnnotationPresent(NotNull.class))
+				if (vi.isRequired())
 					tag.addAttributes(new CustomAttribute("required", "true"));
 				HtmlTemplateBuilder.addAttr(vi.attr, tag);
 			}

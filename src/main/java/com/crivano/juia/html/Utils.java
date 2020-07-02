@@ -3,6 +3,7 @@ package com.crivano.juia.html;
 import javax.validation.constraints.NotNull;
 
 import com.crivano.juia.annotations.Edit;
+import com.crivano.juia.annotations.Required;
 import com.crivano.juia.control.Field;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
@@ -15,8 +16,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 public class Utils {
 	public static Label label(final AbstractHtml parent, final Field vi) {
 		if (vi != null)
-			return new Label(parent, new CustomAttribute("for", vi.fld.getName()), new Title(vi.hint),
-					new ClassAttribute("label")) {
+			return new Label(parent, new CustomAttribute("for", vi.fld.getName()), new ClassAttribute("label")) {
 				{
 					new NoTag(this, vi.caption);
 					labelClue(this, vi.fld);
@@ -32,13 +32,15 @@ public class Utils {
 	}
 
 	public static void labelClue(final Label label, final java.lang.reflect.Field fld) {
-		if (fld.isAnnotationPresent(NotNull.class))
-			new I(label, new Title("Preenchimento obrigatório"), new ClassAttribute("label-clue fa fa-asterisk"));
+		if (fld.isAnnotationPresent(NotNull.class) || fld.isAnnotationPresent(Required.class))
+			new I(label, new CustomAttribute("v-b-popover.hover.top", "'Preenchimento obrigatório'"),
+					new ClassAttribute("label-clue fa fa-asterisk"));
 
 		if (fld.isAnnotationPresent(Edit.class)) {
 			Edit edit = fld.getAnnotation(Edit.class);
 			if (edit.hint() != null && edit.hint().length() > 0)
-				new I(label, new ClassAttribute("label-clue fa fa-question"));
+				new I(label, new CustomAttribute("v-b-popover.hover.top", "'" + edit.hint() + "'"),
+						new ClassAttribute("label-clue fa fa-question"));
 		}
 	}
 
