@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import com.crivano.juia.annotations.Edit;
 import com.crivano.juia.annotations.Search;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -25,6 +26,26 @@ public class JuiaUtils {
 				fld.setAccessible(true);
 				Search juiaSearch = fld.getAnnotation(Search.class);
 				if (juiaSearch == null)
+					continue;
+				fields.add(fld);
+			}
+		}
+		return fields;
+	}
+
+	public static List<Field> getEditFields(Class<?> sourceClass) {
+		List<Field> fields = new ArrayList<Field>();
+		List<Class> classes = new ArrayList<Class>();
+		for (Class clazz = sourceClass; clazz != Object.class; clazz = clazz.getSuperclass()) {
+			classes.add(0, clazz);
+		}
+		for (Class clazz : classes) {
+			Field fieldlist[] = clazz.getDeclaredFields();
+			for (int i = 0; i < fieldlist.length; i++) {
+				Field fld = fieldlist[i];
+				fld.setAccessible(true);
+				Edit juiaEdit = fld.getAnnotation(Edit.class);
+				if (juiaEdit == null)
 					continue;
 				fields.add(fld);
 			}
