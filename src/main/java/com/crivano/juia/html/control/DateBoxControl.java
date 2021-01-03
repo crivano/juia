@@ -22,19 +22,26 @@ public class DateBoxControl {
 	public static void render(Div parent, ClassAttribute col, final FieldDate vi) {
 		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
-				new CustomTag("datepicker", Utils.label(this, vi), new CustomAttribute("date-format", "yyyy-MM-dd"),
-						new CustomAttribute("selector", "form-control"), new CustomAttribute("date-refocus", "true")) {
-					{
-
-						Input input = new Input(this, new Type("text"), new ClassAttribute("form-control"),
-								new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name),
-								new Name(vi.fld.getName()), new CustomAttribute("mask", "2999-19-39"),
-								new CustomAttribute("autocomplete", "off"));
-						if (vi.fld.isAnnotationPresent(NotNull.class))
-							input.addAttributes(new CustomAttribute("ng-required", "true"));
-						HtmlTemplateBuilder.addAttr(vi.attr, input);
-					}
-				};
+//				new CustomTag("datepicker", Utils.label(this, vi), new CustomAttribute("date-format", "yyyy-MM-dd"),
+//						new CustomAttribute("selector", "form-control"), new CustomAttribute("date-refocus", "true")) {
+//					{
+//
+//						Input input = new Input(this, new Type("text"), new ClassAttribute("form-control"),
+//								new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name),
+//								new Name(vi.fld.getName()), new CustomAttribute("mask", "2999-19-39"),
+//								new CustomAttribute("autocomplete", "off"));
+//						if (vi.fld.isAnnotationPresent(NotNull.class))
+//							input.addAttributes(new CustomAttribute("ng-required", "true"));
+//						HtmlTemplateBuilder.addAttr(vi.attr, input);
+//					}
+//				};
+				Label lbl = Utils.label(this, vi);
+				Input input = new Input(lbl, new Type("date"), new ClassAttribute("form-control"),
+						new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name), new Name(vi.fld.getName()),
+						new CustomAttribute("autocomplete", "off"), new CustomAttribute("date-field"));
+				if (vi.fld.isAnnotationPresent(NotNull.class))
+					input.addAttributes(new CustomAttribute("ng-required", "true"));
+				HtmlTemplateBuilder.addAttr(vi.attr, input);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

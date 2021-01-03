@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.joda.money.Money;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import com.crivano.jbiz.IEnum;
 import com.crivano.juia.annotations.Browse;
@@ -35,6 +36,7 @@ import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.control.FieldRefSelect;
 import com.crivano.juia.control.FieldSelect;
 import com.crivano.juia.control.FieldText;
+import com.crivano.juia.control.FieldTime;
 import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
@@ -224,6 +226,8 @@ public class AnnotationViewBuilder extends ViewBuilder {
 			vg = new FieldMultipleSelect();
 		} else if (fld.getType() == LocalDate.class) {
 			vg = new FieldDate();
+		} else if (fld.getType() == LocalTime.class) {
+			vg = new FieldTime();
 		} else if (fld.getType() == Money.class) {
 			vg = new FieldMoney();
 		} else if (fld.getType() == String.class) {

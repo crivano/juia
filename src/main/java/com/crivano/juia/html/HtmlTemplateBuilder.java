@@ -23,6 +23,7 @@ import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.control.FieldRefSelect;
 import com.crivano.juia.control.FieldSelect;
 import com.crivano.juia.control.FieldText;
+import com.crivano.juia.control.FieldTime;
 import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
@@ -40,6 +41,7 @@ import com.crivano.juia.html.control.RefSelectControl;
 import com.crivano.juia.html.control.SelectControl;
 import com.crivano.juia.html.control.StringSelectControl;
 import com.crivano.juia.html.control.TextBoxControl;
+import com.crivano.juia.html.control.TimeBoxControl;
 import com.crivano.juia.html.control.TitleControl;
 import com.crivano.juia.html.control.TopicControl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -263,6 +265,8 @@ public class HtmlTemplateBuilder {
 			MultipleSelectControl.render(row, col, (FieldMultipleSelect) control);
 		} else if (control instanceof FieldDate) {
 			DateBoxControl.render(row, col, (FieldDate) control);
+		} else if (control instanceof FieldTime) {
+			TimeBoxControl.render(row, col, (FieldTime) control);
 		} else if (control instanceof FieldMoney) {
 			MoneyBoxControl.render(row, col, (FieldMoney) control);
 		} else if (control instanceof TableColumn) {
