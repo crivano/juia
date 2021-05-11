@@ -32,7 +32,7 @@ public class TitleControl {
 										else if (view.getKind() == View.Kind.SearchView)
 											new NoTag(this,
 													"Lista de " + view.getPlural()
-															+ (view.getInactivable() ? " Ativ"
+															+ (view.getInactivable() ? " {{showInactive ? 'Ina' : 'A'}}tiv"
 																	+ (view.getGender() == Gender.SHE ? "a" : "o") + "s"
 																	: ""));
 										else if (view.getKind() == View.Kind.ShowView) {

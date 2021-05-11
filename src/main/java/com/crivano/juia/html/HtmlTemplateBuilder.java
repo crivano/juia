@@ -312,7 +312,7 @@ public class HtmlTemplateBuilder {
 			Div section = new Div(div, new ClassAttribute("xform-check xform-group"),
 					new Style("margin-left: 1.25rem"));
 			Input input = new Input(section, new Type("checkbox"), new ClassAttribute("form-check-input"),
-					new CustomAttribute("ng-model", "data.active"));
+					new CustomAttribute("ng-model", control.name));
 			Label lbl = new Label(input, new ClassAttribute("form-check-label"));
 			new NoTag(lbl, control.caption);
 		} else if (control instanceof ButtonNew) {
