@@ -24,6 +24,7 @@ import com.crivano.juia.control.FieldNumeric;
 import com.crivano.juia.control.FieldRefSelect;
 import com.crivano.juia.control.FieldSelect;
 import com.crivano.juia.control.FieldText;
+import com.crivano.juia.control.FieldTime;
 import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
@@ -41,6 +42,7 @@ import com.crivano.juia.html.control.RefSelectControl;
 import com.crivano.juia.html.control.SelectControl;
 import com.crivano.juia.html.control.StringSelectControl;
 import com.crivano.juia.html.control.TextBoxControl;
+import com.crivano.juia.html.control.TimeBoxControl;
 import com.crivano.juia.html.control.TitleControl;
 import com.crivano.juia.html.control.TopicControl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -53,7 +55,6 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
-import com.webfirmframework.wffweb.tag.html.formatting.I;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FieldSet;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
@@ -84,7 +85,8 @@ public class HtmlTemplateBuilder {
 //		Div divBusy = new Div(null, new CustomAttribute("cg-busy",
 //				"{promise:promise,message:'Por favor, aguarde...',templateUrl:'/resources/busy.html'}"));
 
-		Div divWrapper = new Div(null, kind == View.Kind.SearchView ? new CustomAttribute("v-if", "list") : new CustomAttribute("v-if", "data"));
+		Div divWrapper = new Div(null, kind == View.Kind.SearchView ? new CustomAttribute("v-if", "list")
+				: new CustomAttribute("v-if", "data"));
 
 		// Breadcrumbs
 		if ((kind == View.Kind.EditView && view.getSingular() != null)
@@ -263,6 +265,8 @@ public class HtmlTemplateBuilder {
 			MultipleSelectControl.render(row, col, (FieldMultipleSelect) control);
 		} else if (control instanceof FieldDate) {
 			DateBoxControl.render(row, col, (FieldDate) control);
+		} else if (control instanceof FieldTime) {
+			TimeBoxControl.render(row, col, (FieldTime) control);
 		} else if (control instanceof FieldMoney) {
 			MoneyBoxControl.render(row, col, (FieldMoney) control);
 		} else if (control instanceof TableColumn) {
@@ -308,7 +312,7 @@ public class HtmlTemplateBuilder {
 			Div section = new Div(div, new ClassAttribute("xform-check xform-group"),
 					new Style("margin-left: 1.25rem"));
 			Input input = new Input(section, new Type("checkbox"), new ClassAttribute("form-check-input"),
-					new CustomAttribute("v-model", "data.active"));
+					new CustomAttribute("v-model", control.name));
 			Label lbl = new Label(input, new ClassAttribute("form-check-label"));
 			new NoTag(lbl, control.caption);
 		} else if (control instanceof ButtonNew) {

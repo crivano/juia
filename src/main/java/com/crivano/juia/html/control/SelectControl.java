@@ -1,7 +1,5 @@
 package com.crivano.juia.html.control;
 
-import javax.validation.constraints.NotNull;
-
 import com.crivano.jbiz.IEnum;
 import com.crivano.juia.control.FieldCombo;
 import com.crivano.juia.html.HtmlTemplateBuilder;

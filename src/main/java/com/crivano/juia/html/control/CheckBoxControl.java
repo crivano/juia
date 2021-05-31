@@ -25,8 +25,8 @@ public class CheckBoxControl {
 						HtmlTemplateBuilder.addAttr(vi.attr, tag);
 					}
 				};
-				HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
 			}
 		};
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, div);
 	}
 }

@@ -1,7 +1,5 @@
 package com.crivano.juia.html.control;
 
-import javax.validation.constraints.NotNull;
-
 import com.crivano.juia.control.FieldDate;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;

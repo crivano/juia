@@ -1,5 +1,6 @@
 package com.crivano.juia;
 
+import com.crivano.juia.annotations.Global.Gender;
 import com.crivano.juia.control.ButtonCancel;
 import com.crivano.juia.control.ButtonDelete;
 import com.crivano.juia.control.ButtonNew;
@@ -20,6 +21,9 @@ public abstract class ViewBuilder {
 	public abstract void buildView(String prefix, Object o, View.Kind kind, boolean frontPage);
 
 	public void addSearchItems(boolean frontPage) {
+		if (view.getInactivable())
+			view.getControls().add(new FieldCheckActive(
+					"Exibir Inativ" + (view.getGender() == Gender.SHE ? "a" : "o") + "s", "showInactive"));
 		view.getControls().add(new ButtonNew("Novo"));
 	}
 
@@ -30,7 +34,7 @@ public abstract class ViewBuilder {
 		if (deletable)
 			view.getControls().add(new ButtonDelete("Excluir"));
 		if (inactivable)
-			view.getControls().add(new FieldCheckActive("Ativo"));
+			view.getControls().add(new FieldCheckActive("Ativo", "data.active"));
 		view.getControls().add(new ButtonCancel("Cancelar"));
 		view.getControls().add(new ButtonSave("Gravar"));
 	}
