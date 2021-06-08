@@ -91,17 +91,17 @@ public interface IJuiaEntity extends IEntity {
 	default void addTags(SortedSet<ITag> set) {
 	}
 
-//	default Set<@OneToMany IElement>> getRefs() {
-//		Set<@OneToMany IElement>> set = new TreeSet<>();
+//	default Set<@OneToMany IEntity>> getRefs() {
+//		Set<@OneToMany IEntity>> set = new TreeSet<>();
 //		addRefs(set);
 //		return set;
 //	}
 //
-//	protected void addRefs(Set<@OneToMany IElement>> set) {
+//	protected void addRefs(Set<@OneToMany IEntity>> set) {
 //	}
 //
 //	protected void atualizarReference() {
-//		@OneToMany IElement> ref = (@OneToMany IElement>) (Ref) Ref.create(this);
+//		@OneToMany IEntity> ref = (@OneToMany IEntity>) (Ref) Ref.create(this);
 //
 //		Reference reference = new Reference(ref, this.getCode(), this.getDescr(), this.getTags(), this.getRefs());
 //

@@ -75,6 +75,8 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class HtmlTemplateBuilder {
 
+	private static String string;
+
 	@SuppressWarnings("serial")
 	static public Div build(final String prefix, Object o, View.Kind kind) {
 		ViewDirector vd = new ViewDirector();
@@ -106,7 +108,8 @@ public class HtmlTemplateBuilder {
 
 		if (kind == View.Kind.EditView) {
 			form = new Form(divWrapper, new Id("form"), new Name(o.getClass().getSimpleName()),
-					new ClassAttribute("juia-form"), new CustomAttribute("novalidate", "novalidate"));
+					new ClassAttribute("juia-form"), new CustomAttribute("novalidate", "novalidate"),
+					new CustomAttribute("v-if", "data"));
 		} else if (kind == View.Kind.SearchView) {
 			row = new Div(divWrapper, new ClassAttribute("row", "juia", "main-search-row"));
 		} else if (kind == View.Kind.ShowView) {
@@ -153,6 +156,8 @@ public class HtmlTemplateBuilder {
 		fieldSet = new FieldSet(form, new Title(vi.newGroup));
 		addAttr(vi.attrGroup, fieldSet);
 		if (vi.newGroup != null || vi instanceof Repeat) {
+			String base = vi.name.substring(0, vi.name.lastIndexOf("."));
+			fieldSet.addAttributes(new CustomAttribute("v-if", base));
 			String s = vi.newGroup;
 			if (s == null && vi instanceof Repeat)
 				s = ((Repeat) vi).getPlural();
