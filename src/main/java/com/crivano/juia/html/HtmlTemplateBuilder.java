@@ -206,8 +206,9 @@ public class HtmlTemplateBuilder {
 			new NoTag(drop, "{{$index+1}}");
 			Div divDrop = new Div(btnDrop, new ClassAttribute("dropdown-menu pt-0 pb-0"),
 					new CustomAttribute("aria-labelledby", "dropBtn"));
-			ButtonControl.render(divDrop, new ClassAttribute(""), "fa fa-trash", null, repeat.name,
-					repeat.name + ".splice($index, 1);", null, "btn btn-link");
+			ButtonControl.render(
+					divDrop, new ClassAttribute(""), "fa fa-plus", null, repeat.name, repeat.name + ".splice($index + 1, 0, {});",
+					"false", "btn btn-link");
 			ButtonControl.render(
 					divDrop, new ClassAttribute(""), "fa fa-arrow-up", null, repeat.name, repeat.name + "[$index] = "
 							+ repeat.name + ".splice($index - 1, 1, " + repeat.name + "[$index])[0]",
@@ -216,6 +217,8 @@ public class HtmlTemplateBuilder {
 					divDrop, new ClassAttribute(""), "fa fa-arrow-down", null, repeat.name, repeat.name + "[$index] = "
 							+ repeat.name + ".splice($index + 1, 1, " + repeat.name + "[$index])[0]",
 					"$index === " + repeat.name + ".length - 1", "btn btn-link");
+			ButtonControl.render(divDrop, new ClassAttribute(""), "fa fa-trash", null, repeat.name,
+					repeat.name + ".splice($index, 1);", null, "btn btn-link");
 
 			Div colToControls = new Div(row, new ClassAttribute("col"));
 			Div rowToControls = new Div(colToControls, new ClassAttribute("row"));
