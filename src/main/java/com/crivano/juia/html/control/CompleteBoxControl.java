@@ -32,7 +32,11 @@ public class CompleteBoxControl {
 				}
 
 				if (vi.name.contains(".")) {
-					String[] split = vi.name.split("\\.", 2);
+					// Split no último "."
+					int i = vi.name.lastIndexOf(".");
+					String[] split =  {vi.name.substring(0, i), vi.name.substring(i+1)};
+//					System.out.println(vi.name);
+//					String[] split = vi.name.split("\\.", 2);
 					return "{context:" + split[0] + ", variable: '" + split[1] + "', full:" + f + "}";
 				} else
 					return "{variable: " + vi.name + "}";
