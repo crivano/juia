@@ -15,15 +15,15 @@ public abstract class Field extends Control {
 	public String[] getAttr() {
 		if (attrContainer == null)
 			return attr;
-		for (String s : attrContainer) {
-			if (s.startsWith("ng-show=")) {
-				String[] expr = s.split("=", 2);
-				return Utils.append(attr, "ng-reset-on=!(" + expr[1] + ")");
-			} else if (s.startsWith("ng-hide=")) {
-				String[] expr = s.split("=", 2);
-				return Utils.append(attr, "ng-reset-on=(" + expr[1] + ")");
-			}
-		}
+//		for (String s : attrContainer) {
+//			if (s.startsWith("ng-show=")) {
+//				String[] expr = s.split("=", 2);
+//				return Utils.append(attr, "ng-reset-on=!(" + expr[1] + ")");
+//			} else if (s.startsWith("ng-hide=")) {
+//				String[] expr = s.split("=", 2);
+//				return Utils.append(attr, "ng-reset-on=(" + expr[1] + ")");
+//			}
+//		}
 		return attr;
 	}
 
