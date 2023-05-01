@@ -61,7 +61,7 @@ public class MultipleSelectControl {
 
 					}
 				};
-				HtmlTemplateBuilder.addAttr(vi.attr, div);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), div);
 				new I(this);
 			}
 		};

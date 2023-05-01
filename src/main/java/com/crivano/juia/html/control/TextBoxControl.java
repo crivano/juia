@@ -33,7 +33,7 @@ public class TextBoxControl {
 								new CustomAttribute("text-area-auto-expand"), new CustomAttribute("ng-model", vi.name),
 								new Name(vi.fld.getName()));
 					} else {
-						AbstractAttribute attrType = HtmlTemplateBuilder.getAttr("type", vi.attr, null, null);
+						AbstractAttribute attrType = HtmlTemplateBuilder.getAttr("type", vi.getAttr(), null, null);
 						Type type;
 						if (attrType != null)
 							type = new Type(attrType.getAttributeValue());
@@ -45,7 +45,7 @@ public class TextBoxControl {
 					if (vi.fld.isAnnotationPresent(NotNull.class))
 						input.addAttributes(new CustomAttribute("ng-required", "true"));
 
-					HtmlTemplateBuilder.addAttr(vi.attr, input);
+					HtmlTemplateBuilder.addAttr(vi.getAttr(), input);
 				} catch (Exception e) {
 					throw e;
 				}

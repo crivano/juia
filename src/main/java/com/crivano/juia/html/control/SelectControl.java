@@ -45,7 +45,7 @@ public class SelectControl {
 				};
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					select.addAttributes(new CustomAttribute("ng-required", "true"));
-				HtmlTemplateBuilder.addAttr(vi.attr, select);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), select);
 				new I(this);
 			}
 		};

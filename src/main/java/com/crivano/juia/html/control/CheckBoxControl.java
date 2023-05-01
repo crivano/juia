@@ -20,7 +20,7 @@ public class CheckBoxControl {
 					{
 						Input input = new Input(this, new Type("checkbox"), new ClassAttribute("form-check-input"),
 								new CustomAttribute("ng-model", vi.name));
-						HtmlTemplateBuilder.addAttr(vi.attr, input);
+						HtmlTemplateBuilder.addAttr(vi.getAttr(), input);
 						Label lbl = new Label(this, new ClassAttribute("form-check-label"));
 						new NoTag(lbl, vi.caption);
 //				new I(this);

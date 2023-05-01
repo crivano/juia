@@ -26,7 +26,7 @@ public class RefSelectControl {
 				Select select = new Select(Utils.label(this, vi), new ClassAttribute("form-control"),
 						new CustomAttribute("ng-model", vi.name), new CustomAttribute("ng-init", vi.getInit()),
 						new CustomAttribute("ng-options", vi.getOptions()));
-				HtmlTemplateBuilder.addAttr(vi.attr, select);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), select);
 				new I(this);
 				Option option = new Option(select, new Value(""));
 				if (vi.gender == Gender.SHE)
@@ -36,7 +36,7 @@ public class RefSelectControl {
 
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					select.addAttributes(new CustomAttribute("ng-required", "true"));
-				HtmlTemplateBuilder.addAttr(vi.attr, select);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), select);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

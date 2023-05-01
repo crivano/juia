@@ -1,5 +1,7 @@
 package com.crivano.juia.html;
 
+import java.util.Arrays;
+
 import javax.validation.constraints.NotNull;
 
 import com.crivano.juia.annotations.Edit;
@@ -40,6 +42,13 @@ public class Utils {
 			if (edit.hint() != null && edit.hint().length() > 0)
 				new I(label, new ClassAttribute("label-clue fa fa-question"));
 		}
+	}
+	
+	public static <T> T[] append(T[] arr, T element) {
+	    final int N = arr.length;
+	    arr = Arrays.copyOf(arr, N + 1);
+	    arr[N] = element;
+	    return arr;
 	}
 
 }

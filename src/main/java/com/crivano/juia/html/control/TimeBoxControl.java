@@ -31,7 +31,7 @@ public class TimeBoxControl {
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					input.addAttributes(new CustomAttribute("ng-required", "true"));
 
-				HtmlTemplateBuilder.addAttr(vi.attr, input);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), input);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);

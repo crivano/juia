@@ -54,7 +54,7 @@ public class FileControl {
 										new NoTag(this, "Selecione o Arquivo");
 									}
 								};
-								HtmlTemplateBuilder.addAttr(vi.attr, btn);
+								HtmlTemplateBuilder.addAttr(vi.getAttr(), btn);
 							}
 						};
 						new Section(this, new ClassAttribute("col align-self-center")) {

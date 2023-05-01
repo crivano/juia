@@ -24,7 +24,7 @@ public class NumericControl {
 						new Id(vi.fld.getName()), new CustomAttribute("ng-model", vi.name), new Name(vi.fld.getName()));
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					input.addAttributes(new CustomAttribute("ng-required", "true"));
-				HtmlTemplateBuilder.addAttr(vi.attr, input);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), input);
 			}
 		};
 		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
