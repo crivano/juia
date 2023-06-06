@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crivano</groupId>
 	<artifactId>juia</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>VUEJS2-0.0.1-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.crivano</groupId>
 			<artifactId>jbiz</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>VUEJS2-0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
