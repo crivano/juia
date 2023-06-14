@@ -96,6 +96,28 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		return skipShow;
 	}
 
+	public static boolean isSkipEdit(Class clazz) {
+		List<Class> classes = getClassHierarchy(clazz);
+		return isSkipEdit(classes);
+	}
+
+	private static boolean isSkipEdit(List<Class> classes) {
+		boolean skipShow = true;
+		for (Class clazz : classes) {
+			Field fieldlist[] = clazz.getDeclaredFields();
+			for (int i = 0; i < fieldlist.length; i++) {
+				Field fld = fieldlist[i];
+				fld.setAccessible(true);
+				Edit juiaEdit = fld.getAnnotation(Edit.class);
+				if (juiaEdit == null)
+					continue;
+				skipShow = false;
+				break;
+			}
+		}
+		return skipShow;
+	}
+
 	private void addViewItemsForObject(ControlContainer container, String prefix, View.Kind kind, boolean detail,
 			Class originalClass) {
 		List<Class> classes = getClassHierarchy(originalClass);
@@ -174,9 +196,9 @@ public class AnnotationViewBuilder extends ViewBuilder {
 
 	private boolean isManyToOne(Field fld) {
 		boolean manyToOne = false;
-		//System.out.println("*** " + fld.getName());
+		// System.out.println("*** " + fld.getName());
 		for (Annotation a : fld.getDeclaredAnnotations()) {
-			//System.out.println(a.annotationType().getSimpleName());
+			// System.out.println(a.annotationType().getSimpleName());
 			if (a.annotationType().getSimpleName().equals("ManyToOne"))
 				manyToOne = true;
 		}
