@@ -45,6 +45,13 @@ import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
 
 public class AnnotationViewBuilder extends ViewBuilder {
+	private static CaptionBuilder captionBuilder = new CaptionBuilder() {
+	};
+
+	public static void setCaptionBuilder(CaptionBuilder cb) {
+		captionBuilder = cb;
+	}
+
 	public void buildView(String prefix, Object o, View.Kind kind, boolean fFrontView) {
 		view.setKind(kind);
 		Global juiaGlobal = o.getClass().getAnnotation(Global.class);
@@ -414,17 +421,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		if (s.equals("") && juiaBrowse != null)
 			s = juiaBrowse.caption();
 		if (s.equals("")) {
-			s = fld.getName();
-			String result = "";
-			for (int i = 0; i < s.length(); i++) {
-				String ch = s.substring(i, i + 1);
-				if (i == 0)
-					ch = ch.toUpperCase();
-				else if (ch.toUpperCase().equals(ch))
-					ch = " " + ch;
-				result += ch;
-			}
-			s = result;
+			s = captionBuilder.buildCaptionFromName(fld.getName());
 		}
 
 		return s;

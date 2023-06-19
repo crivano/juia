@@ -27,7 +27,11 @@ public class TopicControl {
 				new NoTag(this, vi.caption);
 			}
 		};
-		new NoTag(p, ": ");
+		new Span(p, new ClassAttribute("topic-separator")) {
+			{
+				new NoTag(this, ": ");
+			}
+		};
 		if (IEnum.class.isAssignableFrom(vi.fld.getType())) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("{{");
