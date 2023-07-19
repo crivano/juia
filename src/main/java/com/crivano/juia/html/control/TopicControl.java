@@ -3,10 +3,8 @@ package com.crivano.juia.html.control;
 import com.crivano.jbiz.IEnum;
 import com.crivano.juia.control.Topic;
 import com.webfirmframework.wffweb.tag.html.P;
-import com.webfirmframework.wffweb.tag.html.attribute.Value;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
-import com.webfirmframework.wffweb.tag.html.formsandinputs.Option;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -41,7 +39,10 @@ public class TopicControl {
 			}
 			sb.append("'-' }}");
 			new NoTag(p, sb.toString());
-		} else
-			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
+		} else {
+			new Span(p, new CustomAttribute("ng-bind-html",
+					 value + " && " + value + ".title ? " + value + ".title : " + value ));
+		}
+//			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
 	}
 }
