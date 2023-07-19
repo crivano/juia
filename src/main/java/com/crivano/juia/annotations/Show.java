@@ -12,4 +12,14 @@ public @interface Show {
 	String hint() default "";
 
 	String[] attr() default "";
+
+	int colXS() default 12;
+
+	int colS() default 0;
+
+	int colM() default 0;
+
+	int colL() default 0;
+
+	int colXL() default 0;
 }

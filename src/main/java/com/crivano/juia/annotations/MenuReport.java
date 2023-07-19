@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MenuList {
+public @interface MenuReport {
 	String caption() default "";
 
 	String hint() default "";

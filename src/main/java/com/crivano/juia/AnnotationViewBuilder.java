@@ -43,6 +43,7 @@ import com.crivano.juia.control.Repeat;
 import com.crivano.juia.control.Sidebar;
 import com.crivano.juia.control.TableColumn;
 import com.crivano.juia.control.Topic;
+import com.crivano.juia.util.JuiaUtils;
 
 public class AnnotationViewBuilder extends ViewBuilder {
 	private static CaptionBuilder captionBuilder = new CaptionBuilder() {
@@ -346,6 +347,7 @@ public class AnnotationViewBuilder extends ViewBuilder {
 
 					f.value = juiaShow.value();
 					setFieldGlobals(f, juiaGlobal);
+
 					f.attr = juiaShow.attr();
 				}
 				ShowGroup juiaShowGroup = fld.getAnnotation(ShowGroup.class);
@@ -407,7 +409,10 @@ public class AnnotationViewBuilder extends ViewBuilder {
 			f.gender = juiaGlobal.gender();
 			f.locator = juiaGlobal.locator();
 		}
+		f.locator = JuiaUtils.classLocator(f.fld.getType());
 	}
+	
+	
 
 	static public String fillWithDefaultCaption(String sActual, Edit juiaEdit, Search juiaSearch, Browse juiaBrowse,
 			Field fld) {

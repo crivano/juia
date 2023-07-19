@@ -7,6 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Global {
+	public enum Alignment {
+		LEFT, RIGHT, CENTER
+	}
+
 	public enum Gender {
 		HE, SHE, IT
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.crivano.juia.annotations.Edit;
+import com.crivano.juia.annotations.Global;
 import com.crivano.juia.annotations.Search;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -81,4 +82,67 @@ public class JuiaUtils {
 		return Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 	}
 
+	public static String classLocator(Class clazz) {
+		String locator = null;
+		Global global = (Global) clazz.getAnnotation(Global.class);
+		if (global != null && global.locator() != null && !global.locator().isEmpty())
+			locator = global.locator();
+		else {
+			locator = breakCamelCase(clazz.getSimpleName());
+			locator = slugify(locator, true, false);
+		}
+		return locator;
+	}
+
+	private static String breakCamelCase(String name) {
+		String s = name;
+		String result = "";
+		for (int i = 0; i < s.length(); i++) {
+			String ch = s.substring(i, i + 1);
+			if (i == 0)
+				ch = ch.toUpperCase();
+			else if (ch.toUpperCase().equals(ch))
+				ch = " " + ch;
+			result += ch;
+		}
+		return result;
+	}
+
+	private static String removeAccents(String acentuado) {
+		if (acentuado == null)
+			return null;
+		String temp = new String(acentuado);
+		temp = temp.replaceAll("[ÃÂÁÀ]", "A");
+		temp = temp.replaceAll("[ÉÈÊ]", "E");
+		temp = temp.replaceAll("[ÍÌÎ]", "I");
+		temp = temp.replaceAll("[ÕÔÓÒ]", "O");
+		temp = temp.replaceAll("[ÛÚÙÜ]", "U");
+		temp = temp.replaceAll("[Ç]", "C");
+		temp = temp.replaceAll("[ãâáà]", "a");
+		temp = temp.replaceAll("[éèê]", "e");
+		temp = temp.replaceAll("[íìî]", "i");
+		temp = temp.replaceAll("[õôóò]", "o");
+		temp = temp.replaceAll("[ûúùü]", "u");
+		temp = temp.replaceAll("[ç]", "c");
+		return temp;
+	}
+
+	private static String slugify(String string, boolean lowercase, boolean underscore) {
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.length() == 0)
+			return null;
+		string = removeAccents(string);
+		// Apostrophes.
+		string = string.replaceAll("([a-z])'s([^a-z])", "$1s$2");
+		string = string.replaceAll("[^\\w]", "-").replaceAll("-{2,}", "-");
+		// Get rid of any - at the start and end.
+		string = string.replaceAll("-+$", "").replaceAll("^-+", "");
+
+		if (underscore)
+			string = string.replaceAll("-", "_");
+
+		return (lowercase ? string.toLowerCase() : string);
+	}
 }
