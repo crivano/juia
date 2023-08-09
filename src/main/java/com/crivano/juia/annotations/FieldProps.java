@@ -15,9 +15,15 @@ public @interface FieldProps {
 		DEFAULT, DATE, DATE_HH_MM_SS
 	}
 
+	public enum AggregateInJsonArray {
+		DEFAULT, YYYY_MM_DD
+	}
+
 	String name() default "";
 
 	Align align() default Align.DEFAULT;
 
 	Format format() default Format.DEFAULT;
+
+	AggregateInJsonArray aggregateInJsonArray() default AggregateInJsonArray.DEFAULT;
 }
