@@ -20,12 +20,14 @@ public class TopicControl {
 		}
 
 		P p = new P(parent, new CustomAttribute("ng-show", name));
-		new Span(p, new ClassAttribute("topic-caption")) {
-			{
-				new NoTag(this, vi.caption);
-			}
-		};
-		new NoTag(p, ": ");
+		if (!"-".equals(vi.caption)) {
+			new Span(p, new ClassAttribute("topic-caption")) {
+				{
+					new NoTag(this, vi.caption);
+				}
+			};
+			new NoTag(p, ": ");
+		}
 		if (IEnum.class.isAssignableFrom(vi.fld.getType())) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("{{");
@@ -41,7 +43,7 @@ public class TopicControl {
 			new NoTag(p, sb.toString());
 		} else {
 			new Span(p, new CustomAttribute("ng-bind-html",
-					 value + " && " + value + ".title ? " + value + ".title : " + value ));
+					value + " && " + value + ".title ? " + value + ".title : " + value));
 		}
 //			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
 	}

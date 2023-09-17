@@ -28,6 +28,6 @@ public class CheckBoxControl {
 				};
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, div);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, div, "__FIELD_NAME__", vi.name);
 	}
 }

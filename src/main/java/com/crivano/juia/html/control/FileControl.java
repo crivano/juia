@@ -102,6 +102,6 @@ public class FileControl {
 
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section, "__FIELD_NAME__", vi.name);
 	}
 }

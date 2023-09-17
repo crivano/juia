@@ -36,9 +36,9 @@ public class RefSelectControl {
 
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					select.addAttributes(new CustomAttribute("ng-required", "true"));
-				HtmlTemplateBuilder.addAttr(vi.getAttr(), select);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), select, "__FIELD_NAME__", vi.name);
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section, "__FIELD_NAME__", vi.name);
 	}
 }

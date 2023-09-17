@@ -61,10 +61,10 @@ public class MultipleSelectControl {
 
 					}
 				};
-				HtmlTemplateBuilder.addAttr(vi.getAttr(), div);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), div, "__FIELD_NAME__", vi.name);
 				new I(this);
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section, "__FIELD_NAME__", vi.name);
 	}
 }

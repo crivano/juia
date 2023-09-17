@@ -67,10 +67,10 @@ public class CompleteBoxControl {
 				if (vi.fld.isAnnotationPresent(NotNull.class))
 					div.addAttributes(new CustomAttribute("field-required", "true"));
 
-				HtmlTemplateBuilder.addAttr(vi.getAttr(), div);
+				HtmlTemplateBuilder.addAttr(vi.getAttr(), div, "__FIELD_NAME__", vi.name);
 
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section, "__FIELD_NAME__", vi.name);
 	}
 }

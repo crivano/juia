@@ -45,12 +45,12 @@ public class TextBoxControl {
 					if (vi.fld.isAnnotationPresent(NotNull.class))
 						input.addAttributes(new CustomAttribute("ng-required", "true"));
 
-					HtmlTemplateBuilder.addAttr(vi.getAttr(), input);
+					HtmlTemplateBuilder.addAttr(vi.getAttr(), input, "__FIELD_NAME__", vi.name);
 				} catch (Exception e) {
 					throw e;
 				}
 			}
 		};
-		HtmlTemplateBuilder.addAttr(vi.attrContainer, section);
+		HtmlTemplateBuilder.addAttr(vi.attrContainer, section, "__FIELD_NAME__", vi.name);
 	}
 }
