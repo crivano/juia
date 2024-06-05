@@ -9,6 +9,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.formsandinputs.Button;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.FieldSet;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
@@ -18,7 +19,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class TitleControl {
-	public static void render(final Div parent, final View view) {
+	public static void render(final Div parent, final View view, final boolean hasListButton) {
 		new FieldSet(parent, new ClassAttribute("juia juia-title")) {
 			{
 				new Div(this, new ClassAttribute("row align-items-center")) {
@@ -31,10 +32,10 @@ public class TitleControl {
 											new NoTag(this, "Edição de " + view.getSingular());
 										else if (view.getKind() == View.Kind.SearchView)
 											new NoTag(this,
-													"Lista de " + view.getPlural()
-															+ (view.getInactivable() ? " {{showInactive ? 'Ina' : 'A'}}tiv"
+													"Lista de " + view.getPlural() + (view.getInactivable()
+															? " {{showInactive ? 'Ina' : 'A'}}tiv"
 																	+ (view.getGender() == Gender.SHE ? "a" : "o") + "s"
-																	: ""));
+															: ""));
 										else if (view.getKind() == View.Kind.ShowView) {
 											if (view.getSingular() != null)
 												new NoTag(this, "{{data.title}}");
@@ -43,7 +44,20 @@ public class TitleControl {
 								};
 							}
 						};
-						if (view.getKind() == View.Kind.SearchView) {
+						if (view.getKind() == View.Kind.ShowView && hasListButton) {
+							new Div(this, new ClassAttribute("col col-auto ml-auto no-print")) {
+								{
+									new Button(this, new Id("backtolist"), new Name("backtolist"),
+											new CustomAttribute("ng-click", "backToList()"),
+											new Title("Voltar para a lista"), new ClassAttribute("btn btn-light"),
+											new Type("button")) {
+										{
+											new NoTag(this, "<i class=\"fa fa-list\"/>");
+										}
+									};
+								}
+							};
+						} else if (view.getKind() == View.Kind.SearchView) {
 							new Div(this, new ClassAttribute("col col-auto ml-auto no-print")) {
 								{
 									new Form(this, new Name("filtrar"), new ClassAttribute("juia-form"),

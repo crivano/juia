@@ -94,6 +94,28 @@ public class AnnotationViewBuilder extends ViewBuilder {
 		return skipShow;
 	}
 
+	public static boolean isSkipList(Class clazz) {
+		List<Class> classes = getClassHierarchy(clazz);
+		return isSkipList(classes);
+	}
+
+	private static boolean isSkipList(List<Class> classes) {
+		boolean skipList = true;
+		for (Class clazz : classes) {
+			Field fieldlist[] = clazz.getDeclaredFields();
+			for (int i = 0; i < fieldlist.length; i++) {
+				Field fld = fieldlist[i];
+				fld.setAccessible(true);
+				Search juiaSearch = fld.getAnnotation(Search.class);
+				if (juiaSearch == null)
+					continue;
+				skipList = false;
+				break;
+			}
+		}
+		return skipList;
+	}
+
 	private void addViewItemsForObject(ControlContainer container, String prefix, View.Kind kind, boolean detail,
 			Class originalClass) {
 		List<Class> classes = getClassHierarchy(originalClass);

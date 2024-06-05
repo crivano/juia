@@ -78,7 +78,8 @@ public class HtmlTemplateBuilder {
 	@SuppressWarnings("serial")
 	static public Div build(final String prefix, Object o, View.Kind kind) {
 		ViewDirector vd = new ViewDirector();
-		vd.setViewBuilder(new AnnotationViewBuilder());
+		AnnotationViewBuilder avb = new AnnotationViewBuilder();
+		vd.setViewBuilder(avb);
 		vd.constructView(prefix, o, kind, false);
 		final View view = vd.getView();
 
@@ -90,7 +91,7 @@ public class HtmlTemplateBuilder {
 		// Breadcrumbs
 		if ((kind == View.Kind.EditView && view.getSingular() != null)
 				|| (kind == View.Kind.SearchView && view.getPlural() != null) || (kind == Kind.ShowView)) {
-			TitleControl.render(divWrapper, view);
+			TitleControl.render(divWrapper, view, !avb.isSkipList(o.getClass()));
 		}
 
 //		Div divContainer = new Div(divWrapper, new ClassAttribute("container"));
