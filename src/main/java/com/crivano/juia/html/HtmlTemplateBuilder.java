@@ -293,7 +293,7 @@ public class HtmlTemplateBuilder {
 			Tr trb = new Tr(tbody,
 					new CustomAttribute("dir-paginate", "data in list | filter: filter | itemsPerPage:20"),
 					tableColumn.skipShow ? new CustomAttribute("ng-click", "edit(data.key)")
-							: new CustomAttribute("ng-click", "show(data.key)"));
+							: new CustomAttribute("ng-click", "show(data.key, $event)"));
 			for (int j = i; j < container.getControls().size(); j++) {
 				final Control vitc = container.getControls().get(j);
 				if (!(vitc instanceof TableColumn))
