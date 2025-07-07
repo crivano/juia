@@ -62,4 +62,9 @@ public class Repeat extends Control implements ControlContainer {
 				+ "\",\"controls\":" + this.controls.toString() + "}";
 	}
 
+	@Override
+	public String getName() {
+		return fldName;
+	}
+
 }

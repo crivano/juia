@@ -41,9 +41,15 @@ public class TopicControl {
 			}
 			sb.append("'-' }}");
 			new NoTag(p, sb.toString());
+		} else if ("Set".equals(vi.fld.getType().getSimpleName())) {
+			Span repeat = new Span(p, new CustomAttribute("ng-repeat", "item in " + value));
+			Span comma = new Span(repeat, new CustomAttribute("ng-if", "$index"));
+			new NoTag(comma, ", ");
+			new Span(repeat, new CustomAttribute("ng-bind-html",
+					value+ " && item.originalObject.title ? item.originalObject.title : item"));
 		} else {
 			new Span(p, new CustomAttribute("ng-bind-html",
-					value + " && " + value + ".title ? " + value + ".title : " + value));
+					value+ " && " + value + ".title ? " + value + ".title : " + value));
 		}
 //			new NoTag(p, "{{" + value + " && " + value + ".title ? " + value + ".title : " + value + "}}");
 	}

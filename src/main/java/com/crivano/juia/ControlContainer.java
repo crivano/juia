@@ -7,6 +7,8 @@ import com.crivano.juia.control.Control;
 
 public interface ControlContainer {
 	List<Control> getControls();
+	
+	public String getName();
 
 	public String getSingular();
 

@@ -30,4 +30,10 @@ public class Sidebar extends Control implements ControlContainer {
 	public void setControls(ArrayList<Control> controls) {
 		this.controls = controls;
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

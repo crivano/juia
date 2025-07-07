@@ -5,17 +5,17 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crivano.jbiz.IElement;
 import com.crivano.jbiz.IEnum;
+import com.crivano.juia.annotations.Global;
 import com.crivano.juia.control.FieldMultipleSelect;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
-import com.webfirmframework.wffweb.tag.html.attribute.global.Title;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.formatting.I;
-import com.webfirmframework.wffweb.tag.html.formsandinputs.Label;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Section;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
@@ -27,11 +27,29 @@ public class MultipleSelectControl {
 
 	public static void render(Div parent, ClassAttribute col, final FieldMultipleSelect vi) {
 		List<IdLabel> l = new ArrayList<>();
+		String options = "";
+		String init = vi.name + "=[]";
 
 		Type type = vi.fld.getGenericType();
 		if (type instanceof ParameterizedType) {
 			ParameterizedType pType = (ParameterizedType) type;
 			Type arg0 = pType.getActualTypeArguments()[0];
+
+			if (arg0 instanceof ParameterizedType) {
+				ParameterizedType p0 = (ParameterizedType) arg0;
+				Class ref = (Class<?>) p0.getRawType();
+				if (ref.getSimpleName().equals("Ref")) {
+					Type arg00 = p0.getActualTypeArguments()[0];
+					Class refOf = (Class<?>) arg00;
+					if (IElement.class.isAssignableFrom(refOf)) {
+						Global juiaGlobal = (Global) refOf.getAnnotation(Global.class);
+						options = refOf.getSimpleName();
+						init += ";load('" + refOf.getSimpleName() + "', '/app/" + juiaGlobal.locator() + "/idlabel');";
+//						init += "; console.log('iniciando');";
+					}
+				}
+			}
+
 			if (Class.class.isInstance(arg0)) {
 				Class en = Class.class.cast(arg0);
 				if (IEnum.class.isAssignableFrom(en)) {
@@ -41,18 +59,20 @@ public class MultipleSelectControl {
 						idl.label = v.getDescr();
 						l.add(idl);
 					}
+					Gson gson = new GsonBuilder().create();
+					options = gson.toJson(l).replace("\"", "'");
 				}
 			}
 		}
 
-		Gson gson = new GsonBuilder().create();
-		final String options = gson.toJson(l).replace("\"", "'");
+		final String optionsFinal = options;
+		final String initFinal = init;
 
 		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
 				Div div = new Div(Utils.label(this, vi), new CustomAttribute("ng-dropdown-multiselect"),
-						new CustomAttribute("options", options), new CustomAttribute("selected-model", vi.name),
-						new CustomAttribute("ng-init", vi.name + "=[]"),
+						new CustomAttribute("options", optionsFinal), new CustomAttribute("selected-model", vi.name),
+						new CustomAttribute("ng-init", initFinal),
 						new CustomAttribute("extra-settings",
 								"{smartButtonMaxItems: 1, buttonClasses:'form-control multiselect-button', externalIdProp:'strings'}"),
 						new CustomAttribute("translation-texts",

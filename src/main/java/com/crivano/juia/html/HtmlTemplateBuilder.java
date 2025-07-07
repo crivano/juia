@@ -207,9 +207,8 @@ public class HtmlTemplateBuilder {
 			new NoTag(drop, "{{$index+1}}");
 			Div divDrop = new Div(btnDrop, new ClassAttribute("dropdown-menu pt-0 pb-0"),
 					new CustomAttribute("aria-labelledby", "dropBtn"));
-			ButtonControl.render(
-					divDrop, new ClassAttribute(""), "fa fa-plus", null, repeat.name, repeat.name + ".splice($index + 1, 0, {});",
-					"false", "btn btn-link");
+			ButtonControl.render(divDrop, new ClassAttribute(""), "fa fa-plus", null, repeat.name,
+					repeat.name + ".splice($index + 1, 0, {});", "false", "btn btn-link");
 			ButtonControl.render(
 					divDrop, new ClassAttribute(""), "fa fa-arrow-up", null, repeat.name, repeat.name + "[$index] = "
 							+ repeat.name + ".splice($index - 1, 1, " + repeat.name + "[$index])[0]",
@@ -252,7 +251,7 @@ public class HtmlTemplateBuilder {
 		} else if (control instanceof FieldSelect) {
 			StringSelectControl.render(row, col, (FieldSelect) control);
 		} else if (control instanceof FieldFile) {
-			FileControl.render(row, col, (FieldFile) control);
+			FileControl.render(row, col, (FieldFile) control, container);
 		} else if (control instanceof FieldText) {
 			TextBoxControl.render(row, col, (FieldText) control);
 		} else if (control instanceof FieldInteger) {

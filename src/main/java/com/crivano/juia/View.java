@@ -67,4 +67,10 @@ public class View implements ControlContainer {
 		this.inativable = inactivable;
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

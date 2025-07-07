@@ -1,6 +1,8 @@
 package com.crivano.juia.html.control;
 
+import com.crivano.juia.ControlContainer;
 import com.crivano.juia.control.FieldFile;
+import com.crivano.juia.control.Repeat;
 import com.crivano.juia.html.HtmlTemplateBuilder;
 import com.crivano.juia.html.Utils;
 import com.webfirmframework.wffweb.tag.html.attribute.Role;
@@ -19,16 +21,20 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 public class FileControl {
 
-	public static void render(Div parent, ClassAttribute col, final FieldFile vi) {
+	public static void render(Div parent, ClassAttribute col, final FieldFile vi, final ControlContainer container) {
+		final String name = (container != null && container instanceof Repeat)
+				? "data." + container.getName() + "[{{$index}}]." + vi.name.split("\\.")[1]
+				: vi.name;
+
 		Section section = new Section(parent, new ClassAttribute(col.getAttributeValue() + " form-group")) {
 			{
 				Utils.label(this, vi);
 				Div divUpload = new Div(this, new ClassAttribute("row")) {
 					{
-						new Section(this, new ClassAttribute("col col-sm-auto align-self-center"),
+						new Section(this, new ClassAttribute("col col-sm-auto align-self-centerx"),
 								new CustomAttribute("ng-show",
-										vi.name + " && (" + vi.name + ".originalObject.description == 'image/jpeg' || "
-												+ vi.name + ".originalObject.description == 'image/png')")) {
+										vi.name + " && (" + vi.name + ".originalObject.contentType == 'image/jpeg' || "
+												+ name + ".originalObject.contentType == 'image/png')")) {
 							{
 								new Div(this, new Id("thumbnail"), new ClassAttribute("kjh")) {
 									{
@@ -39,11 +45,12 @@ public class FileControl {
 								};
 							}
 						};
-						new Section(this, new ClassAttribute("col col-sm-auto align-self-center")) {
+						new Section(this, new ClassAttribute("col col-sm-auto align-self-centerx")) {
 							{
 								Button btn = new Button(this, new ClassAttribute("btn btn-info"),
+										new CustomAttribute("ng-if", "!" + vi.name + ".originalObject.key"),
 										new Style("width: 100%"), new Type("file"), new CustomAttribute("ngf-select",
-												"uploadFiles('" + vi.name + "', $files, $invalidFiles)")
+												"uploadFiles('" + name + "', $files, $invalidFiles)")
 								// new Accept("application/pdf"),
 								// new CustomAttribute("ngf-pattern",
 								// "application/pdf"),
@@ -55,6 +62,23 @@ public class FileControl {
 									}
 								};
 								HtmlTemplateBuilder.addAttr(vi.getAttr(), btn);
+
+								Span filename = new Span(this, new ClassAttribute("form-control"),
+										new CustomAttribute("ng-if", vi.name + ".originalObject.filenameOriginal")) {
+									{
+										new NoTag(this, "{{" + vi.name + ".originalObject.filenameOriginal}}");
+									}
+								};
+							}
+						};
+						new Section(this, new ClassAttribute("col col-sm-auto align-self-centerx")) {
+							{
+								Button btnLimpar = new Button(this, new ClassAttribute("btn btn-light"),
+										new CustomAttribute("ng-if", vi.name + ".originalObject.key"), new CustomAttribute("ng-click", vi.name + " = undefined")) {
+									{
+										new NoTag(this, "<i class=\"fa fa-fa fa-trash\"></i>");
+									}
+								};
 							}
 						};
 						new Section(this, new ClassAttribute("col align-self-center")) {
