@@ -17,7 +17,7 @@ import com.webfirmframework.wffweb.tag.html.formsandinputs.Form;
 import com.webfirmframework.wffweb.tag.html.html5.stylesandsemantics.Footer;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 
-public interface IJuiaAction<E extends IEntity, A extends IActor, V extends IEvent<E>, T extends ITag> {
+public interface IJuiaAction<E extends IEntity, A extends IActor, V extends IEvent, T extends ITag> {
 	default String getName() {
 		return this.getClass().getAnnotation(Global.class).action();
 	}

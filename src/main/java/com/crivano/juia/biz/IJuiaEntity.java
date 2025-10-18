@@ -56,9 +56,9 @@ public interface IJuiaEntity extends IEntity {
 	default void beforeSerialize() {
 	}
 
-	default void addEvent(IEvent<?> c) {
+	default void addEvent(IEvent c) {
 		if (getEvent() != null) {
-			((SortedSet<IEvent<?>>) getEvent()).add((IEvent<?>) c);
+			((SortedSet<IEvent>) getEvent()).add((IEvent) c);
 		}
 	}
 
